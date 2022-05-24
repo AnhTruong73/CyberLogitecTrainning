@@ -21,7 +21,7 @@ import com.clt.framework.support.view.signon.SignOnUserAccount;
 
 /**
  * ALPS-Practicetraining Business Logic Command Interface<br>
- * - Interface to business logic for ALPS-Practicetraining<br>
+ * - Interface to business logic for ALPS-Practicetraining.<br>
  *
  * @author anhtruong
  * @since J2EE 1.6
