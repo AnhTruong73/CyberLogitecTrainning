@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="CodeMgmtDBDAODetailRSQL">
+			<desc><![CDATA[Code Management List Detail]]></desc>
+			<sql><![CDATA[
+SELECT
+	INTG_CD_ID
+,	INTG_CD_VAL_CTNT
+,	INTG_CD_VAL_DESC
+,	INTG_CD_VAL_DP_DESC
+,	INTG_CD_VAL_DP_SEQ
+,	APLY_ST_DT
+,	APLY_END_DT
+,	CRE_USR_ID
+,	CRE_DT
+,	UPD_USR_ID
+,	UPD_DT
+FROM COM_INTG_CD_DTL
+WHERE @[intg_cd_id]=INTG_CD_ID			]]></sql>
+			<params>
+				<param name="intg_cd_id" type="12" value="" out="N"/>
+			</params>
+		</query>
+	</querys>
+</sqls>

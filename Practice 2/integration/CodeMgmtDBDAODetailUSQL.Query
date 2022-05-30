@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="CodeMgmtDBDAODetailUSQL">
+			<desc><![CDATA[Update data detail]]></desc>
+			<sql><![CDATA[
+UPDATE COM_INTG_CD_DTL SET 
+	UPD_DT= TO_DATE(@[upd_dt],'YYYY-MM-DD')
+,	UPD_USR_ID = @[upd_usr_id]
+,	APLY_END_DT = TO_DATE(@[aply_end_dt],'YYYY-MM-DD')
+,	APLY_ST_DT = TO_DATE(@[aply_st_dt],'YYYY-MM-DD')
+,	INTG_CD_VAL_DP_SEQ = @[intg_cd_val_dp_seq]
+,	INTG_CD_VAL_DESC = @[intg_cd_val_desc]
+,	INTG_CD_VAL_DP_DESC = @[intg_cd_val_dp_desc]
+,	INTG_CD_VAL_CTNT = @[intg_cd_val_ctnt]
+WHERE	INTG_CD_VAL_CTNT = @[intg_cd_val_ctnt]
+AND INTG_CD_ID = @[intg_cd_id]			]]></sql>
+			<params>
+				<param name="upd_dt" type="12" value="" out="Y"/>
+				<param name="upd_usr_id" type="12" value="" out="Y"/>
+				<param name="aply_end_dt" type="12" value="" out="Y"/>
+				<param name="aply_st_dt" type="12" value="" out="Y"/>
+				<param name="intg_cd_val_dp_seq" type="12" value="" out="Y"/>
+				<param name="intg_cd_val_desc" type="12" value="" out="Y"/>
+				<param name="intg_cd_val_dp_desc" type="12" value="" out="Y"/>
+				<param name="intg_cd_val_ctnt" type="12" value="" out="Y"/>
+				<param name="intg_cd_id" type="12" value="" out="Y"/>
+			</params>
+		</query>
+	</querys>
+</sqls>
