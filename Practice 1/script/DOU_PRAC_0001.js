@@ -237,11 +237,11 @@ function validateForm(sheetObj, formObj, sAction){
 	if (sRow!=""){
 		var lRow = sheetObj.FindStatusRow("I").split(";");
 //		with each row in list
-		for (var i =0; i<sRow.length; i++) {
+		for (var i =0; i<lRow.length; i++) {
 //					check validate Error message code
-			if (!regrex.test(sheetObj.GetCellValue(sRow[i],"err_msg_cd"))){
+			if (!regrex.test(sheetObj.GetCellValue(lRow[i],"err_msg_cd"))){
 //						Show row and message of row invalid
-				ComShowCodeMessage("COM132201","Message code row " +sRow[i])
+				ComShowCodeMessage("COM132201","Message code row " +lRow[i])
 				return false;
 			}
 		}
