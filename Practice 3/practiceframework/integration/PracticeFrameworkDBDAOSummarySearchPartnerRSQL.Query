@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="PracticeFrameworkDBDAOSummarySearchPartnerRSQL">
+			<desc><![CDATA[SearchPartner()]]></desc>
+			<sql><![CDATA[
+SELECT 
+	distinct(jo_crr_cd) 
+FROM joo_carrier
+			]]></sql>
+			<params>
+			</params>
+		</query>
+	</querys>
+</sqls>
