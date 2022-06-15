@@ -52,8 +52,8 @@ function loadPage(){
 	}
 
 	initCalender();
-	fr_acct_yrmon.disabled = true;
-	to_acct_yrmon.disabled = true;
+	s_fr_acct_yrmon.disabled = true;
+	s_to_acct_yrmon.disabled = true;
 	
 	s_jo_crr_cd.SetSelectIndex(0);
 	s_rlane_cd.SetEnable(false);
@@ -280,9 +280,9 @@ function tab1_OnChange(tabObj, nItem) {
 function initCalender(){
 	var formObj = document.form;
 	var ymTo = ComGetNowInfo("ym","-");
-	formObj.to_acct_yrmon.value = ymTo;
-	var ymFrom = ComGetDateAdd(formObj.to_acct_yrmon.value + "-01","M",-1);
-	formObj.fr_acct_yrmon.value = GetDateFormat(ymFrom,"ym");	
+	formObj.s_to_acct_yrmon.value = ymTo;
+	var ymFrom = ComGetDateAdd(formObj.s_to_acct_yrmon.value + "-01","M",-1);
+	formObj.s_fr_acct_yrmon.value = GetDateFormat(ymFrom,"ym");	
 }
 
 /**
@@ -413,20 +413,20 @@ function processButtonClick(){
 		switch (srcName){
 		case "btn_from_back":
 			if(!checkOver3Month(formObj)) return;
-			subMonth(formObj.fr_acct_yrmon);
+			subMonth(formObj.s_fr_acct_yrmon);
 			break;
 		case "btn_from_next":
 			if (!checkDate(formObj)) return;
-			addMonth(formObj.fr_acct_yrmon);
+			addMonth(formObj.s_fr_acct_yrmon);
 			break;
 			
 		case "btn_to_back":
 			if (!checkDate(formObj)) return;
-			subMonth(formObj.to_acct_yrmon);
+			subMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_to_next":
 			if(!checkOver3Month(formObj)) return;
-			addMonth(formObj.to_acct_yrmon);
+			addMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_Retrieve":
 			doActionIBSheet(sheetObject1, formObj, IBSEARCH);
@@ -511,20 +511,21 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 				ComOpenWait(false);
 				break;
 			}
-			sheetObj.Down2Excel({FileName:"Summary.xls",DownCols: makeHiddenSkipCol(sheetObj),Merge:1, SheetDesign:1, KeyFieldMark:0});
+			sheetObjects[0].Down2ExcelBuffer(true);
+			sheetObjects[0].Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObjects[0]),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Summary'});
+			sheetObjects[1].Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObjects[1]),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Details'});
+			sheetObjects[0].Down2ExcelBuffer(false);
 			ComOpenWait(false);
 		}
-		else {								
-			let param = {
-					 URL:"/opuscntr/PRACTICE_0003_DETAILS.jsp" //Business logic page
-					 ,ExtendParam: FormQueryString(formObj)
-					 ,FileName:"Details.xls"
-					 ,DownCols: makeHiddenSkipCol(sheetObj)
-					 ,Merge:1
-					 ,SheetDesign:1
-					 ,KeyFieldMark:0
-					};
-			sheetObj.DirectDown2Excel(param);
+		else {
+			with (formObj) {
+				f_cmd.value = SEARCH04;
+				target="_top";
+				s_fr_acct_yrmon.disabled=false;
+				s_to_acct_yrmon.disabled=false;
+				action="PRACTICE_0003DL.do?" + FormQueryString(formObj);
+				submit();
+			}
 			ComOpenWait(false);
 		}	
 		break;
@@ -552,8 +553,8 @@ function returnDefault(formObj){
  * @returns {Boolean}
  */
 function checkDate(formObj){
-	var fromDate = formObj.fr_acct_yrmon.value.replaceStr("-","") + "01";
-	var toDate   = formObj.to_acct_yrmon.value.replaceStr("-","") + "01";
+	var fromDate = formObj.s_fr_acct_yrmon.value.replaceStr("-","") + "01";
+	var toDate   = formObj.s_to_acct_yrmon.value.replaceStr("-","") + "01";
 	if (ComGetDaysBetween(fromDate, toDate) <= 0){
 		ComShowMessage("ToDate must be greater than FromDate");
 		return false;
@@ -569,8 +570,8 @@ function checkDate(formObj){
  * @returns {Boolean}
  */
 function checkOver3Month(formObj){
-	var fromDate = formObj.fr_acct_yrmon.value.replaceStr("-","") + "01";
-	var toDate   = formObj.to_acct_yrmon.value.replaceStr("-","") + "01";
+	var fromDate = formObj.s_fr_acct_yrmon.value.replaceStr("-","") + "01";
+	var toDate   = formObj.s_to_acct_yrmon.value.replaceStr("-","") + "01";
 	if (ComGetDaysBetween(fromDate, toDate) >= 88 && checkAgree==0){
 		if (confirm("Year Month over 3 months, do you realy want to get data?")){
 			checkAgree=1;
@@ -652,11 +653,11 @@ function sheet1_OnDblClick(SheetObj, Row, Col){
 		return;
 	}
 	
-	let indexInv=SheetObj.GetCellValue(Row,"inv_no");
+	let indexInv=SheetObj.GetCellValue(Row,"csr_no");
 	let rowcount = sheetObjects[1].RowCount();
 	for (let i=Row; i<= rowcount+1;i++) {
 		if (sheetObjects[1].GetCellValue(i,"jo_crr_cd")!=""){
-			let indexInvCompare = sheetObjects[1].GetCellValue(i,"inv_no");
+			let indexInvCompare = sheetObjects[1].GetCellValue(i,"csr_no");
 			if (indexInvCompare === indexInv){
 				tab1.SetSelectedIndex(1);
 				let colName =SheetObj.ColSaveName(Col);

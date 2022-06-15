@@ -22,7 +22,6 @@
 <%@ page import="com.clt.framework.support.view.signon.SignOnUserAccount"%>
 <%@ page import="com.clt.apps.opus.esm.clv.practiceframework.event.Practice0003Event"%>
 <%@ page import="org.apache.log4j.Logger" %>
-
 <%
 	Practice0003Event  event = null;					//PDTO(Data Transfer Object including Parameters)
 	Exception serverException   = null;			//서버에서 발생한 에러
@@ -44,10 +43,13 @@
 			strErrMsg = new ErrorHandler(serverException)
 					.loadPopupMessage();
 		}
-		// 초기화면 로딩시 서버로부터 가져온 데이터 추출하는 로직추가 ..
 		GeneralEventResponse eventResponse = (GeneralEventResponse) request
-				.getAttribute("EventResponse");
+					.getAttribute("EventResponse");
 		partner = eventResponse.getETCData("jo_crr_cd");
+		// 초기화면 로딩시 서버로부터 가져온 데이터 추출하는 로직추가 ..
+		
+		
+		
 	} catch (Exception e) {
 		out.println(e.toString());
 	}
@@ -101,10 +103,10 @@
 		        <tbody>
 					<tr>
 						<th width="">Year month</th>					
-							<td><input type="text" style="width:80px;" class="input1" maxlength="8" name="fr_acct_yrmon" value="" id="fr_acct_yrmon"/> 
+							<td><input type="text" style="width:80px;" class="input1" maxlength="8" name="s_fr_acct_yrmon" id="s_fr_acct_yrmon"/> 
 							   <button type="button" class="btn_left" name="btn_from_back" id="btn_from_back"></button><!--  
 							   --><button type="button" class="btn_right" name="btn_from_next" id="btn_from_next"></button>~  
-							   <input type="text" style="width:80px;" class="input1" maxlength="8" name="to_acct_yrmon" value="" id="to_acct_yrmon"/>
+							   <input type="text" style="width:80px;" class="input1" maxlength="8" name="s_to_acct_yrmon" id="s_to_acct_yrmon"/>
 							   <button type="button" class="btn_left" name="btn_to_back" id="btn_to_back"></button><!--  
 							   --><button type="button" class="btn_right" name="btn_to_next" id="btn_to_next"></button></td>
 						<th width="">Partner</th>
