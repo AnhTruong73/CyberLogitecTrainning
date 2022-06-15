@@ -1,7 +1,7 @@
 package com.clt.apps.opus.esm.clv.practiceframework.event;
 
-import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.ConditionVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummarySearchTradeVO;
 import com.clt.framework.component.util.JSPUtil;
@@ -40,6 +40,10 @@ public class PRACTICE_0003HTMLAction extends HTMLActionSupport {
 		else if (command.isCommand(FormCommand.SEARCH03)){
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));
 		}
+		else if (command.isCommand(FormCommand.SEARCH04)){
+			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));
+		}
+
 		return  event;
 	}
 
@@ -51,9 +55,11 @@ public class PRACTICE_0003HTMLAction extends HTMLActionSupport {
 	 * @param eventResponse EventResponse interface
 	 */
 	public void doEnd(HttpServletRequest request, EventResponse eventResponse) {
-//		Set response event in HTTPRequest to display in View(JSP)
 		request.setAttribute("EventResponse", eventResponse);
 	}
+	
+	
+
 
 	/**
 	 * Saving HttpRequest parsing result value in HttpRequest attribute<br>
@@ -65,4 +71,5 @@ public class PRACTICE_0003HTMLAction extends HTMLActionSupport {
 //		Set event in HTTPRequest attribute to execute in SC
 		request.setAttribute("Event", event);
 	}
+	
 }

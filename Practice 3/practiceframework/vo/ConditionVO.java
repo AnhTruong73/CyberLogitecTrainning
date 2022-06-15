@@ -98,8 +98,8 @@ public class ConditionVO extends AbstractValueObject{
 	public HashMap<String, String> getFieldNames(){
 		this.hashFields.put("jo_crr_cd", "joCrrCd");
 		this.hashFields.put("rlane_cd", "rlaneCd");
-		this.hashFields.put("fr_acct_yrmon", "acctYrmonFr");
-		this.hashFields.put("to_acct_yrmon", "acctYrmonTo");
+		this.hashFields.put("s_fr_acct_yrmon", "acctYrmonFr");
+		this.hashFields.put("s_to_acct_yrmon", "acctYrmonTo");
 		this.hashFields.put("trd_cd", "trdCd");
 		return this.hashFields;
 	}
@@ -108,8 +108,8 @@ public class ConditionVO extends AbstractValueObject{
 	public void fromRequest(HttpServletRequest request, String prefix) {
 		setJoCrrCd(JSPUtil.getParameter(request, prefix + "s_jo_crr_cd", ""));
 		setRlaneCd(JSPUtil.getParameter(request, prefix + "s_rlane_cd", ""));
-		setAcctYrmonFr(JSPUtil.getParameter(request, prefix + "fr_acct_yrmon", ""));
-		setAcctYrmonTo(JSPUtil.getParameter(request, prefix + "to_acct_yrmon", ""));
+		setAcctYrmonFr(JSPUtil.getParameter(request, prefix + "s_fr_acct_yrmon", ""));
+		setAcctYrmonTo(JSPUtil.getParameter(request, prefix + "s_to_acct_yrmon", ""));
 		setTrdCd(JSPUtil.getParameter(request, prefix + "s_trd_cd", ""));
 	}
 	
@@ -129,8 +129,8 @@ public class ConditionVO extends AbstractValueObject{
 		try {
 			String[] joCrrCd = (JSPUtil.getParameter(request, prefix	+ "s_jo_crr_cd", length));
 			String[] rlaneCd = (JSPUtil.getParameter(request, prefix	+ "s_rlane_cd", length));
-			String[] acctYrmonFr = (JSPUtil.getParameter(request, prefix	+ "fr_acct_yrmon", length));
-			String[] acctYrmonTo = (JSPUtil.getParameter(request, prefix	+ "to_acct_yrmon", length));
+			String[] acctYrmonFr = (JSPUtil.getParameter(request, prefix	+ "s_fr_acct_yrmon", length));
+			String[] acctYrmonTo = (JSPUtil.getParameter(request, prefix	+ "s_to_acct_yrmon", length));
 			String[] trdCd = (JSPUtil.getParameter(request, prefix	+ "s_trd_cd", length));
 			
 			for (int i = 0; i < length; i++) {

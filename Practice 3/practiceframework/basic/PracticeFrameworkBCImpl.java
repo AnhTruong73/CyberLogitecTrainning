@@ -1,5 +1,6 @@
 package com.clt.apps.opus.esm.clv.practiceframework.basic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +10,10 @@ import com.clt.apps.opus.esm.clv.practiceframework.vo.DetailsVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummarySearchTradeVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummaryVO;
 import com.clt.framework.component.message.ErrorHandler;
+import com.clt.framework.component.rowset.DBRowSet;
 import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.integration.DAOException;
+import com.clt.framework.support.db.RowSetUtil;
 import com.clt.framework.support.layer.basic.BasicCommandSupport;
 
 public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements PracticeFrameworkBC {
@@ -76,6 +79,40 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		try {
 //			Search in DBDAO
 			return dbDao.searchDetailsVO(detailsVO);
+		} catch(DAOException ex) {
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		} catch (Exception ex) {
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public List<Object> searchDetailsListForExcel(ConditionVO detailsVO)
+			throws EventException {
+		DBRowSet rowSet=null;
+		List<Object> sList = new ArrayList();
+		List<DetailsVO> list = null;
+		int colCnt=0;
+		String[] sTitle = null;
+		String[] sColumn =null;
+		try {
+			rowSet = dbDao.searchDetailsListForExcel(detailsVO);
+			list = (List)RowSetUtil.rowSetToVOs(rowSet, DetailsVO .class);
+			sList.add(list);
+//			rowSet.next();
+			colCnt = rowSet.getMetaData().getColumnCount();
+			sTitle = new String[colCnt];
+			sColumn = new String[colCnt];
+			
+			for(int i=1; i<=colCnt;i++){
+				sTitle[i-1] = rowSet.getMetaData().getColumnLabel(i);
+				sColumn[i-1] = rowSet.getMetaData().getColumnLabel(i).toLowerCase();
+			}
+			sList.add(sTitle);
+			sList.add(sColumn);
+			return sList;
+			
 		} catch(DAOException ex) {
 			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
 		} catch (Exception ex) {

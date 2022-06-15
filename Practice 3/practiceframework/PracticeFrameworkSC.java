@@ -13,10 +13,12 @@
 
 package com.clt.apps.opus.esm.clv.practiceframework;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 import java.util.Map;
+
 
 import com.clt.apps.opus.esm.clv.practiceframework.basic.PracticeFrameworkBC;
 import com.clt.apps.opus.esm.clv.practiceframework.basic.PracticeFrameworkBCImpl;
@@ -24,6 +26,7 @@ import com.clt.apps.opus.esm.clv.practiceframework.event.Practice0003Event;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.DetailsVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummaryVO;
 import com.clt.framework.component.message.ErrorHandler;
+import com.clt.framework.component.rowset.DBRowSet;
 import com.clt.framework.core.layer.event.Event;
 import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.event.EventResponse;
@@ -73,10 +76,39 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 			else if (e.getFormCommand().isCommand(FormCommand.SEARCH03)){
 				eventResponse = searchDetails(e); 
 			}
+			else if (e.getFormCommand().isCommand(FormCommand.SEARCH04)){
+				eventResponse = searchDetailsListForExcel(e); 
+			}
+			
 		}
 		return eventResponse;
 	}
 	
+	
+	private EventResponse searchDetailsListForExcel(Event e) throws EventException{
+		// TODO Auto-generated method stub
+		GeneralEventResponse eventResponse = new GeneralEventResponse();
+		Practice0003Event event = (Practice0003Event)e;
+		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
+		
+		List<Object> oList = new ArrayList<Object>();
+//		StringBuilder sbFileName = new StringBuilder();
+//		String fileName ="";
+//		String pgmNo = "";
+		
+
+		oList = command.searchDetailsListForExcel(event.getConditionVO());
+		
+		
+		eventResponse.setCustomData("vos",(List<DetailsVO>)oList.get(0));
+		eventResponse.setCustomData("title",(String[])oList.get(1));
+		eventResponse.setCustomData("columns",(String[])oList.get(2));
+		eventResponse.setCustomData("fileName","ESM_DOU_0108DL.xls");
+		eventResponse.setCustomData("isZip",false);
+		eventResponse.setCustomData("sheetName","dinhanh");
+		return eventResponse;
+	}
+
 	
 	private EventResponse searchDetails(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
