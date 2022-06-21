@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="JooArMgmtDBDAOCheckDuplicateRSQL">
+			<desc><![CDATA[using check duplicate]]></desc>
+			<sql><![CDATA[
+SELECT COUNT(JO_CRR_CD) as cnt
+FROM 
+	(SELECT JO_CRR_CD 
+	 FROM JOO_CARRIER 
+	 WHERE JO_CRR_CD=@[jo_crr_cd] 
+	 AND RLANE_CD=@[rlane_cd]
+	 AND ROWNUM =1)			]]></sql>
+			<params>
+				<param name="jo_crr_cd" type="12" value="" out="N"/>
+				<param name="rlane_cd" type="12" value="" out="N"/>
+			</params>
+		</query>
+	</querys>
+</sqls>

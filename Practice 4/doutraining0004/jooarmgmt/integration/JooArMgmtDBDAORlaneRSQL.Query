@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="JooArMgmtDBDAORlaneRSQL">
+			<desc><![CDATA[rlane]]></desc>
+			<sql><![CDATA[
+select distinct(rlane_cd) from joo_carrier			]]></sql>
+			<params>
+			</params>
+		</query>
+	</querys>
+</sqls>
