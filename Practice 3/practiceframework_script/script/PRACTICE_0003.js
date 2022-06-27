@@ -36,45 +36,82 @@ var sheetObjects=new Array();
 var sheetCnt=0;
 var tabObjects=new Array();
 var tabCnt=0;
-var beforetab=1;
+var currentTab=1;
 var checkAgree= 0;
-
+var historySearchString = "";
+var historySearchString1 = "";
+var searchOptionForDbl = "";
 document.onclick=processButtonClick;
-
 /**
  * {loadPage} functions that calls a common function that sets the default settings of the sheet
  * It is the first called area when fire jsp onload event
 */
-function loadPage(){
-	
+function loadPage(){	
+	// initializr combobox
 	for ( var k = 0; k < comboObjects.length; k++) {
 		initCombo(comboObjects[k], k + 1);
 	}
-
-	initCalender();
+	// initializr calendar with default value and disable input
+	initCalendar();
 	s_fr_acct_yrmon.disabled = true;
 	s_to_acct_yrmon.disabled = true;
-	
 	s_jo_crr_cd.SetSelectIndex(0);
-	s_rlane_cd.SetEnable(false);
-	s_trd_cd.SetEnable(false);
 	
+	// initializr tab
 	for(k = 0;k < tabObjects.length; k++){
 		initTab(tabObjects[k], k + 1);
 		tabObjects[k].SetSelectedIndex(0);
 	}
-	
-	
-	
+	// initializr sheet
 	for(i = 0; i < sheetObjects.length; i++) {
 		ComConfigSheet(sheetObjects[i]);
 		initSheet(sheetObjects[i], i + 1);
 		ComEndConfigSheet(sheetObjects[i]);
 	}
-	ComOpenWait(true);
+	//Search Sumary tab in first - time 
 	doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
-	doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
 }
+
+/**
+ * {changeSearchString} save Search Option of sheet1
+ * @param formObj
+ */
+function changeSearchString(formObj){
+	historySearchString = "";
+	historySearchString+=formObj.s_fr_acct_yrmon.value;
+	historySearchString+=formObj.s_to_acct_yrmon.value;
+	historySearchString+=formObj.s_jo_crr_cd.value;
+	historySearchString+=formObj.s_rlane_cd.value;
+	historySearchString+=formObj.s_trd_cd.value;
+}
+/**
+ * {changeSearchString1} save Search Option of sheet2
+ * @param formObj
+ */
+function changeSearchString1(formObj){
+	historySearchString1 = "";
+	historySearchString1+=formObj.s_fr_acct_yrmon.value;
+	historySearchString1+=formObj.s_to_acct_yrmon.value;
+	historySearchString1+=formObj.s_jo_crr_cd.value;
+	historySearchString1+=formObj.s_rlane_cd.value;
+	historySearchString1+=formObj.s_trd_cd.value;
+}
+
+/**
+ * {currentSearchString} get current Option Search when switch tabs
+ * @param formObj
+ * @returns String currentString
+ */
+function currentSearchString(formObj){
+	let currentString = "";
+	currentString+=formObj.s_fr_acct_yrmon.value;
+	currentString+=formObj.s_to_acct_yrmon.value;
+	currentString+=formObj.s_jo_crr_cd.value;
+	currentString+=formObj.s_rlane_cd.value;
+	currentString+=formObj.s_trd_cd.value;
+	return currentString; 
+}
+
 
 /**
  * {initCombo} functions that define the basic properties of the combobox
@@ -90,6 +127,7 @@ function initCombo(comboObj, comboNo) {
 	        SetDropHeight(200);
 	        ValidChar(2,1);
 		}
+		// partner from ETCDATA and split "|"
 		var comboItems = partner.split("|");
 		addComboItem(comboObj, comboItems);
 		break;
@@ -107,6 +145,7 @@ function addComboItem(comboObj, comboItems) {
 		if(comboItem.length == 1){
 			comboObj.InsertItem(i, comboItem[0], comboItem[0]);
 		}else{
+			// insert one by one item into comboObj
 			comboObj.InsertItem(i, comboItem[0] + "|" + comboItem[1], comboItem[1]);
 		}
 		
@@ -122,9 +161,10 @@ function addComboItem(comboObj, comboItems) {
 function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
 	var count = s_jo_crr_cd.GetItemCount();
 	var checkSelectCount = 0;
-	
+	// when check "ALL"
 	if (Code === 0){
 		var bChk = s_jo_crr_cd.GetItemCheck(Code);
+		// selected all will uncheck all and disable s_rlane_cd,s_trd_cd
         if(bChk){
             for(var i=1 ; i < count ; i++) {
             	s_jo_crr_cd.SetItemCheck(i,false);
@@ -135,22 +175,27 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
         	s_trd_cd.SetEnable(false);
         }
 	}
+	// else 
 	else {
         var bChk=s_jo_crr_cd.GetItemCheck(Code);
+        // selected item
         if (bChk) {
+        	// uncheck "All" and enable rlane
         	s_jo_crr_cd.SetItemCheck(0,false);
         	s_rlane_cd.SetEnable(true);
+        	//Get Data for combobox "Lane"
         	getLaneComboData();
         }
     }
-
+	//when check more
 	for (var i = 0; i < count; i++){
 		if (s_jo_crr_cd.GetItemCheck(i)){
 			checkSelectCount += 1;
 			getLaneComboData();
 		}	
 	}
-	 if(checkSelectCount === 0) {
+	// when no item was checked
+	if(checkSelectCount === 0) {
 		s_jo_crr_cd.SetItemCheck(0,true,false);
 		s_rlane_cd.RemoveAll();
 		s_trd_cd.RemoveAll();
@@ -165,10 +210,13 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
 function getLaneComboData(){
 	s_rlane_cd.RemoveAll();
  	s_trd_cd.RemoveAll();
+ 	//get item of combobox "Lane" from server 
 	document.form.f_cmd.value = SEARCH01;
 	var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", FormQueryString(document.form));
 	rlaneCd = ComGetEtcData(xml,"rlane_cd");
+	//generate Data combobox "Lane"
 	generDataCombo(comboObjects[1], rlaneCd);
+	// when ETCdata return > 0 will selected first item and enable combobox "Lane"
 	if(s_rlane_cd.GetItemCount() > 0){
 		s_rlane_cd.SetSelectIndex(0,1);
 		s_rlane_cd.SetEnable(true);
@@ -181,9 +229,9 @@ function getLaneComboData(){
  * {s_rlane_cd_OnChange} functions that handling event on change of combobox Lane
  */
 function s_rlane_cd_OnChange(){
+	// Get Data and set enable combobox "Trade code" 
 	s_trd_cd.SetEnable(true);
 	getTradeComboData();
-
 }
 
 /**
@@ -191,10 +239,13 @@ function s_rlane_cd_OnChange(){
  */
 function getTradeComboData(){
 	s_trd_cd.RemoveAll();
+	//get item of combobox "Lane" from server 
 	document.form.f_cmd.value = SEARCH02;
 	var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", FormQueryString(document.form));
 	trdCd = ComGetEtcData(xml,"trd_cd");
+	//generate Data combobox "Trade code"
 	generDataCombo(comboObjects[2], trdCd);
+	// when ETCdata return > 0 will selected first item and enable combobox "Trade code"
 	if(s_trd_cd.GetItemCount() > 0){
 		s_trd_cd.SetSelectIndex(0,1);
 		s_trd_cd.SetEnable(true);
@@ -219,6 +270,7 @@ function generDataCombo(comboObj, dataStr){
 		}
 		if (dataStr.length > 0 && dataStr.indexOf("|") == -1){
 			comboObj.InsertItem(-1, dataStr, dataStr);
+			console.log(dataStr);
 		}
 	}
 }
@@ -262,22 +314,38 @@ function initTab(tabObj , tabNo) {
  */
 function tab1_OnChange(tabObj, nItem) {
 	var objs=document.all.item("tabLayer");
-	objs[nItem].style.display="Inline";		
+	objs[nItem].style.display="Inline";
 	for(var i = 0; i<objs.length; i++){
-		  if(i != nItem){
-		   objs[i].style.display="none";
-		   objs[beforetab].style.zIndex=objs[nItem].style.zIndex - 1 ;
-		  }
+//		switch tab with zIndex
+		if(i != nItem){
+			objs[i].style.display="none";
+			objs[currentTab].style.zIndex=objs[nItem].style.zIndex - 1 ;
 		}
-	beforetab=nItem;
+	}
+	// if sheet2 dont have any data will search
+	if(historySearchString!==""&&historySearchString1==""&&sheetObjects[1].RowCount()==0){
+		doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
+	}
+//	 when change Option search client must confirm to search sheet1 or not
+	let curSearchString = currentSearchString(document.form);
+	if(historySearchString!=curSearchString&& historySearchString !== ""){
+		if (confirm("Search Option was changed!! Do you want retrieve?"))
+			doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
+	}
+//	 when change Option search client must confirm to search sheet2 or not
+	else if (historySearchString1!==curSearchString&& historySearchString1 !== ""){
+		if (confirm("Search Option was changed!! Do you want retrieve?"))
+			doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
+	}
+	currentTab=nItem;
     resizeSheet();
 }
 
 
 /**
- * {initCalender} functions that define the basic properties of the Yearmonth on the screen
+ * {initCalendar} functions that define the basic properties of the Yearmonth on the screen
  */
-function initCalender(){
+function initCalendar(){
 	var formObj = document.form;
 	var ymTo = ComGetNowInfo("ym","-");
 	formObj.s_to_acct_yrmon.value = ymTo;
@@ -429,8 +497,10 @@ function processButtonClick(){
 			addMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_Retrieve":
-			doActionIBSheet(sheetObject1, formObj, IBSEARCH);
-			doActionIBSheet(sheetObject2, formObj, IBSEARCH);
+			if (currentTab===0)
+				doActionIBSheet(sheetObject1, formObj, IBSEARCH);
+			else 
+				doActionIBSheet(sheetObject2, formObj, IBSEARCH);
 			break;
 		case "btn_New":
 			doActionIBSheet(sheetObject1,formObj,IBRESET);
@@ -489,15 +559,18 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 //	with 4 case ("IBSEARCH | IBSAVE | IBINSERT | IBDOWNEXCEL")
 	switch (sAction){
 	case IBSEARCH:
+		var opt = { Sync : 1 };
 		ComOpenWait(true);
 		//storage processing
 		if(sheetObj.id=="sheet1"){
 			formObj.f_cmd.value = SEARCH;
+			sheetObj.DoSearch("PRACTICE_0003GS.do", FormQueryString(formObj),opt);
 		}
-		if (sheetObj.id=="sheet2"){
+		else if (sheetObj.id=="sheet2"){
 			formObj.f_cmd.value = SEARCH03;
+			sheetObj.DoSearch("PRACTICE_0003GS.do", FormQueryString(formObj),opt);
 		}
-		sheetObj.DoSearch("PRACTICE_0003GS.do", FormQueryString(formObj));
+		
 		break;
 	case IBRESET:
 		ComOpenWait(true);
@@ -518,14 +591,17 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 			ComOpenWait(false);
 		}
 		else {
-			with (formObj) {
-				f_cmd.value = SEARCH04;
-				target="_top";
-				s_fr_acct_yrmon.disabled=false;
-				s_to_acct_yrmon.disabled=false;
-				action="PRACTICE_0003DL.do?" + FormQueryString(formObj);
-				submit();
-			}
+			formObj.f_cmd.value = COMMAND01;
+			let param ={
+					URL:"/opuscntr/PRACTICE_0003DL.do",
+					ExtendParam:FormQueryString(formObj),
+					FileName:"Details.xls",
+					DownCols: makeHiddenSkipCol(sheetObj),
+					Merge:1,
+					SheetDesign:1,
+					KeyFieldMark:0
+			};
+			sheetObj.DirectDown2Excel(param);
 			ComOpenWait(false);
 		}	
 		break;
@@ -542,7 +618,7 @@ function returnDefault(formObj){
 	formObj.reset();
 	sheetObjects[0].RemoveAll();
 	sheetObjects[1].RemoveAll();
-	initCalender();
+	initCalendar();
 	s_jo_crr_cd.SetSelectIndex(0);
 	ComOpenWait(false);
 }
@@ -613,6 +689,12 @@ function sheet1_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
 			}
 		}
 	}
+	
+	changeSearchString(document.form);
+	document.form.f_cmd=SEARCH03;
+	searchOptionForDbl= FormQueryString(document.form)
+	ComOpenWait(false);
+	
 }
 /**
  * {sheet2_OnSearchEnd} functions that handling event after search 
@@ -637,7 +719,8 @@ function sheet2_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
 			}
 		}
 	}
-	ComOpenWait(false);
+	changeSearchString1(document.form);
+	ComOpenWait(false);	
 }
 
 
@@ -648,11 +731,21 @@ function sheet2_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
  * @param Col
  */
 function sheet1_OnDblClick(SheetObj, Row, Col){
-	const t0 = performance.now();
 	if (SheetObj.GetCellValue(Row,"jo_crr_cd")==""){
 		return;
 	}
-	
+	console.log(historySearchString1);
+	if (sheetObjects[1].RowCount() <=0 ){ 
+//		doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+		ComOpenWait(true);
+		document.form.f_cmd.value = SEARCH03;
+		var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", searchOptionForDbl);
+		sheetObjects[1].LoadSearchData(xml,{Sync:1});
+	}
+	else if (sheetObjects[1].RowCount() <=0 && historySearchString1!==""){
+		ComShowCodeMessage('COM130401');
+		return;
+	}
 	let indexInv=SheetObj.GetCellValue(Row,"csr_no");
 	let rowcount = sheetObjects[1].RowCount();
 	for (let i=Row; i<= rowcount+1;i++) {
@@ -662,8 +755,6 @@ function sheet1_OnDblClick(SheetObj, Row, Col){
 				tab1.SetSelectedIndex(1);
 				let colName =SheetObj.ColSaveName(Col);
 				sheetObjects[1].SelectCell(i,colName);
-				const t1 = performance.now();
-				console.log(t1 - t0);
 				break;
 				
 			}

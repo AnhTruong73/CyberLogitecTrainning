@@ -89,7 +89,7 @@
 	</div>
 	
 	<div class="wrap_search">
-		<div class="opus_design_inquiry">
+		<div class="opus_design_inquiry" onChange="changeSearchString(document.form);">
 		    <table>
 		    <colgroup>
 					<col width="100" />				

@@ -6,8 +6,7 @@
 			<sql><![CDATA[
 SELECT 
 	distinct(jo_crr_cd) 
-FROM joo_carrier
-			]]></sql>
+FROM joo_carrier			]]></sql>
 			<params>
 			</params>
 		</query>

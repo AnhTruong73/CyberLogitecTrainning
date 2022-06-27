@@ -204,19 +204,18 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		return list;
 	}
 
-	public DBRowSet searchDetailsListForExcel(ConditionVO detailsVO) throws DAOException {
+	public DBRowSet searchDetailsRSForExcel(ConditionVO conditionVO) throws DAOException {
 		DBRowSet dbRowset = null;
 		//query parameter
 		Map<String, Object> param = new HashMap<String, Object>();
 		//velocity parameter
 		Map<String, Object> velParam = new HashMap<String, Object>();
-		
 		try{
-			if(detailsVO != null){
-				Map<String, String> mapVO = detailsVO .getColumnValues();
+			if(conditionVO != null){
+				Map<String, String> mapVO = conditionVO .getColumnValues();
 				List<String> obj_list_no = new ArrayList<>();
-				if (null!=detailsVO.getJoCrrCd()){
-					String[] partners = detailsVO.getJoCrrCd().split(",");
+				if (null!=conditionVO.getJoCrrCd()){
+					String[] partners = conditionVO.getJoCrrCd().split(",");
 					for(int i = 0; i < partners.length; i++){
 						obj_list_no.add(partners[i]);
 					}

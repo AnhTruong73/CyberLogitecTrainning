@@ -13,7 +13,6 @@
 
 package com.clt.apps.opus.esm.clv.practiceframework;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +25,6 @@ import com.clt.apps.opus.esm.clv.practiceframework.event.Practice0003Event;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.DetailsVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummaryVO;
 import com.clt.framework.component.message.ErrorHandler;
-import com.clt.framework.component.rowset.DBRowSet;
 import com.clt.framework.core.layer.event.Event;
 import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.event.EventResponse;
@@ -59,25 +57,30 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 		// TODO Auto-generated method stub
 		EventResponse eventResponse = null;
 		
-		
 		if (e.getEventName().equalsIgnoreCase("Practice0003Event")) {
 			if (e.getFormCommand().isCommand(FormCommand.SEARCH)) {
+				//search Sumary
 				eventResponse = searchSummary(e);
 			}
 			else if (e.getFormCommand().isCommand(FormCommand.DEFAULT)){
+				//init data for combobox Partner
 				eventResponse = initData(); 
 			}
 			else if (e.getFormCommand().isCommand(FormCommand.SEARCH01)){
+				//search data for combobox rlane
 				eventResponse = searchLane(e); 
 			}
 			else if (e.getFormCommand().isCommand(FormCommand.SEARCH02)){
+				//search data for combobox trade code
 				eventResponse = searchTrade(e); 
 			}
 			else if (e.getFormCommand().isCommand(FormCommand.SEARCH03)){
+				//search details
 				eventResponse = searchDetails(e); 
 			}
-			else if (e.getFormCommand().isCommand(FormCommand.SEARCH04)){
-				eventResponse = searchDetailsListForExcel(e); 
+			else if (e.getFormCommand().isCommand(FormCommand.COMMAND01)){
+				// direct down2excel
+				eventResponse = searchDetailsRSForExcel(e); 
 			}
 			
 		}
@@ -85,31 +88,22 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 	
 	
-	private EventResponse searchDetailsListForExcel(Event e) throws EventException{
+	private EventResponse searchDetailsRSForExcel(Event e) throws EventException {
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		Practice0003Event event = (Practice0003Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
-		
-		List<Object> oList = new ArrayList<Object>();
-//		StringBuilder sbFileName = new StringBuilder();
-//		String fileName ="";
-//		String pgmNo = "";
-		
-
-		oList = command.searchDetailsListForExcel(event.getConditionVO());
-		
-		
-		eventResponse.setCustomData("vos",(List<DetailsVO>)oList.get(0));
-		eventResponse.setCustomData("title",(String[])oList.get(1));
-		eventResponse.setCustomData("columns",(String[])oList.get(2));
-		eventResponse.setCustomData("fileName","ESM_DOU_0108DL.xls");
-		eventResponse.setCustomData("isZip",false);
-		eventResponse.setCustomData("sheetName","dinhanh");
+		try{
+			eventResponse.setRsVoList(command.searchDetailsRSForExcel(event.getConditionVO()));
+		}catch(EventException ex){
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		}catch(Exception ex){
+			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
+		}
 		return eventResponse;
 	}
 
-	
+
 	private EventResponse searchDetails(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		Practice0003Event event = (Practice0003Event)e;

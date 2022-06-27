@@ -1,6 +1,7 @@
 package com.clt.apps.opus.esm.clv.practiceframework.basic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import com.clt.framework.component.message.ErrorHandler;
 import com.clt.framework.component.rowset.DBRowSet;
 import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.integration.DAOException;
-import com.clt.framework.support.db.RowSetUtil;
 import com.clt.framework.support.layer.basic.BasicCommandSupport;
 
 public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements PracticeFrameworkBC {
@@ -86,33 +86,35 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+
 	@Override
-	public List<Object> searchDetailsListForExcel(ConditionVO detailsVO)
+	public List<Object> searchDetailsRSForExcel(ConditionVO conditionVO)
 			throws EventException {
-		DBRowSet rowSet=null;
-		List<Object> sList = new ArrayList();
-		List<DetailsVO> list = null;
-		int colCnt=0;
-		String[] sTitle = null;
-		String[] sColumn =null;
+		// TODO Auto-generated method stub
 		try {
-			rowSet = dbDao.searchDetailsListForExcel(detailsVO);
-			list = (List)RowSetUtil.rowSetToVOs(rowSet, DetailsVO .class);
-			sList.add(list);
-//			rowSet.next();
-			colCnt = rowSet.getMetaData().getColumnCount();
-			sTitle = new String[colCnt];
-			sColumn = new String[colCnt];
-			
-			for(int i=1; i<=colCnt;i++){
-				sTitle[i-1] = rowSet.getMetaData().getColumnLabel(i);
-				sColumn[i-1] = rowSet.getMetaData().getColumnLabel(i).toLowerCase();
+			DBRowSet rs = dbDao.searchDetailsRSForExcel(conditionVO);
+			List<Object> li=new ArrayList<>();
+			Map<Object, Object> mp=null;
+			while (rs.next()){
+				mp=new HashMap<>(); 
+				mp.put("csr_no",rs.getString("CSR_NO"));
+			    mp.put("inv_rev_act_amt",rs.getString("INV_REV_ACT_AMT")); 
+			    mp.put("locl_curr_cd",rs.getString("LOCL_CURR_CD"));
+			    mp.put("cust_vndr_seq",rs.getString("CUST_VNDR_SEQ")); 
+			    mp.put("jo_crr_cd",rs.getString("JO_CRR_CD"));
+			    mp.put("rlane_cd",rs.getString("RLANE_CD")); 
+			    mp.put("rev_exp",rs.getString("REV_EXP"));
+			    mp.put("cust_vndr_cnt_cd",rs.getString("CUST_VNDR_CNT_CD")); 
+			    mp.put("inv_no",rs.getString("INV_NO"));
+			    mp.put("cust_vndr_eng_nm",rs.getString("CUST_VNDR_ENG_NM"));
+			    mp.put("inv_exp_act_amt",rs.getString("INV_EXP_ACT_AMT")); 
+			    mp.put("item",rs.getString("ITEM"));
+			    mp.put("prnr_ref_no",rs.getString("PRNR_REF_NO")); 
+			    mp.put("apro_flg",rs.getString("APRO_FLG")); 
+			    li.add(mp); 
 			}
-			sList.add(sTitle);
-			sList.add(sColumn);
-			return sList;
-			
+//			Search in DBDAO
+			return li;
 		} catch(DAOException ex) {
 			throw new EventException(new ErrorHandler(ex).getMessage(),ex);
 		} catch (Exception ex) {

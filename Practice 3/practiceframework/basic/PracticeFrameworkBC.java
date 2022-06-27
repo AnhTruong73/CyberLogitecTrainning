@@ -20,5 +20,6 @@ public interface PracticeFrameworkBC{
 	public Map<String, String> searchTrade(SummarySearchTradeVO trade) throws EventException;
 
 	public List<DetailsVO> searchDetailsVO(ConditionVO detailsVO) throws EventException;
-	public List<Object> searchDetailsListForExcel(ConditionVO detailsVO) throws EventException;
+
+	public List searchDetailsRSForExcel(ConditionVO conditionVO) throws EventException;
 }

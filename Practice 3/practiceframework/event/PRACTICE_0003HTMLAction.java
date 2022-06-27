@@ -25,22 +25,27 @@ public class PRACTICE_0003HTMLAction extends HTMLActionSupport {
 //		Parsing HTML DOM object's value into Java variable
     	FormCommand command = FormCommand.fromRequest(request);
     	Practice0003Event event = new Practice0003Event();
+    	// search sumary
 		if(command.isCommand(FormCommand.SEARCH)) {
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));
 		}
+		// search rlane
 		else if(command.isCommand(FormCommand.SEARCH01)){
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));;
 		}
+		// search trade code
 		else if(command.isCommand(FormCommand.SEARCH02)){
 			SummarySearchTradeVO trade = new SummarySearchTradeVO();
 			trade.setJoCrrCd(JSPUtil.getParameter(request, "s_jo_crr_cd", ""));
 			trade.setRlaneCd(JSPUtil.getParameter(request, "s_rlane_cd", ""));
 			event.setTradeVO(trade);
 		}
+		// search detail
 		else if (command.isCommand(FormCommand.SEARCH03)){
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));
 		}
-		else if (command.isCommand(FormCommand.SEARCH04)){
+		// directdown2excel
+		else if (command.isCommand(FormCommand.COMMAND01)){
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));
 		}
 
