@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.clt.apps.opus.esm.clv.practiceframework.basic.PracticeFrameworkBC;
 import com.clt.apps.opus.esm.clv.practiceframework.basic.PracticeFrameworkBCImpl;
-import com.clt.apps.opus.esm.clv.practiceframework.event.Practice0003Event;
+import com.clt.apps.opus.esm.clv.practiceframework.event.EsmDou0108Event;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.DetailsVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummaryVO;
 import com.clt.framework.component.message.ErrorHandler;
@@ -57,7 +57,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 		// TODO Auto-generated method stub
 		EventResponse eventResponse = null;
 		
-		if (e.getEventName().equalsIgnoreCase("Practice0003Event")) {
+		if (e.getEventName().equalsIgnoreCase("EsmDou0108Event")) {
 			if (e.getFormCommand().isCommand(FormCommand.SEARCH)) {
 				//search Sumary
 				eventResponse = searchSummary(e);
@@ -91,7 +91,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	private EventResponse searchDetailsRSForExcel(Event e) throws EventException {
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		Practice0003Event event = (Practice0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
 		try{
 			eventResponse.setRsVoList(command.searchDetailsRSForExcel(event.getConditionVO()));
@@ -106,7 +106,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 
 	private EventResponse searchDetails(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		Practice0003Event event = (Practice0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
 		
 		try{
@@ -125,7 +125,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 
 	private EventResponse searchLane(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		Practice0003Event event = (Practice0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
 		
 		try{
@@ -175,7 +175,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	
 	private EventResponse searchTrade(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		Practice0003Event event = (Practice0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
 		try{		
 			Map<String,String> list = command.searchTrade(event.getTradeVO());
@@ -200,7 +200,7 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	private EventResponse searchSummary(Event e) throws EventException  {
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
-		Practice0003Event event = (Practice0003Event)e;
+		EsmDou0108Event event = (EsmDou0108Event)e;
 		PracticeFrameworkBC command = new PracticeFrameworkBCImpl();
 		
 		try{

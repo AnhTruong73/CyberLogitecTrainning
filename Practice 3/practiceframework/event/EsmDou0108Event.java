@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : EsmDou0108Event.java
+*@FileTitle : EsmDou0108Event
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.06.06 JayTruong
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.06.06  JayTruong
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practiceframework.event;
 
 import com.clt.apps.opus.esm.clv.practiceframework.vo.ConditionVO;
@@ -6,7 +18,7 @@ import com.clt.apps.opus.esm.clv.practiceframework.vo.SummarySearchTradeVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummaryVO;
 import com.clt.framework.support.layer.event.EventSupport;
 
-public class Practice0003Event extends EventSupport {
+public class EsmDou0108Event extends EventSupport {
 
 	/**
 	 * 
@@ -44,7 +56,7 @@ public class Practice0003Event extends EventSupport {
 		this.tradeVO = tradeVO;
 	}
 
-	public Practice0003Event(){}
+	public EsmDou0108Event(){}
 	
 	public SummaryVO getSummaryVO() {
 		return summaryVO;

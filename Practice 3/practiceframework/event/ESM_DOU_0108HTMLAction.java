@@ -1,3 +1,15 @@
+/*=========================================================
+*Copyright(c) 2022 CyberLogitec
+*@FileName : ESM_DOU_0108HTMLAction.java
+*@FileTitle : ESM_DOU_0108HTMLAction
+*Open Issues :
+*Change history :
+*@LastModifyDate : 2022.06.06 JayTruong
+*@LastModifier : 
+*@LastVersion : 1.0
+* 2022.06.06  JayTruong
+* 1.0 Creation
+=========================================================*/
 package com.clt.apps.opus.esm.clv.practiceframework.event;
 
 
@@ -11,20 +23,24 @@ import com.clt.framework.core.layer.event.EventResponse;
 import com.clt.framework.support.controller.HTMLActionSupport;
 import com.clt.framework.support.controller.html.FormCommand;
 
-public class PRACTICE_0003HTMLAction extends HTMLActionSupport {
+/**
+ * @author JayTruong
+ *
+ */
+public class ESM_DOU_0108HTMLAction extends HTMLActionSupport {
 	private static final long serialVersionUID = 1L;
 	
 	
 	/**
-	 * Creat DOU_PRAC_0001HTMLAction object
+	 * Creat ESM_DOU_0108HTMLAction object
 	 */
-	public PRACTICE_0003HTMLAction() {}
+	public ESM_DOU_0108HTMLAction() {}
 	
 	
 	public Event perform(HttpServletRequest request) throws HTMLActionException {
 //		Parsing HTML DOM object's value into Java variable
     	FormCommand command = FormCommand.fromRequest(request);
-    	Practice0003Event event = new Practice0003Event();
+    	EsmDou0108Event event = new EsmDou0108Event();
     	// search sumary
 		if(command.isCommand(FormCommand.SEARCH)) {
 			event.setConditionVO((ConditionVO)getVO(request, ConditionVO .class,""));

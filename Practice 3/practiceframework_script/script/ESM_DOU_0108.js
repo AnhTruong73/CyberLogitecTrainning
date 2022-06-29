@@ -1,6 +1,6 @@
 /*=========================================================
 *Copyright(c) 2022 CyberLogitec
-*@FileName : PRACTICE_0003.js
+*@FileName : ESM_DOU_0108.js
 *@FileTitle : Pactice 3
 *Open Issues :
 *Change history :
@@ -24,7 +24,7 @@
 
     /**
      * @extends 
-     * @class PRACTICE_0003 : PRACTICE_0003 생성을 위한 화면에서 사용하는 업무 스크립트를 정의한다.
+     * @class ESM_DOU_0108 : ESM_DOU_0108 생성을 위한 화면에서 사용하는 업무 스크립트를 정의한다.
      */
 
 
@@ -38,10 +38,15 @@ var tabObjects=new Array();
 var tabCnt=0;
 var currentTab=1;
 var checkAgree= 0;
-var historySearchString = "";
-var historySearchString1 = "";
+
+var signalToConfirm ="";
+var searchOption="";
+var searchOptionSumary="";
+var searchOptionDetails="";
+
 var searchOptionForDbl = "";
 document.onclick=processButtonClick;
+
 /**
  * {loadPage} functions that calls a common function that sets the default settings of the sheet
  * It is the first called area when fire jsp onload event
@@ -68,50 +73,22 @@ function loadPage(){
 		initSheet(sheetObjects[i], i + 1);
 		ComEndConfigSheet(sheetObjects[i]);
 	}
+	searchOption=setSearchOption();
 	//Search Sumary tab in first - time 
 	doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
+	signalToConfirm = "FISRTTIME";
 }
 
-/**
- * {changeSearchString} save Search Option of sheet1
- * @param formObj
- */
-function changeSearchString(formObj){
-	historySearchString = "";
-	historySearchString+=formObj.s_fr_acct_yrmon.value;
-	historySearchString+=formObj.s_to_acct_yrmon.value;
-	historySearchString+=formObj.s_jo_crr_cd.value;
-	historySearchString+=formObj.s_rlane_cd.value;
-	historySearchString+=formObj.s_trd_cd.value;
+function setSearchOption(){
+	let formObj = document.form;
+	let nameSearchOption = "";
+	nameSearchOption+=formObj.s_fr_acct_yrmon.value;
+	nameSearchOption+=formObj.s_to_acct_yrmon.value;
+	nameSearchOption+=formObj.s_jo_crr_cd.value;
+	nameSearchOption+=formObj.s_rlane_cd.value;
+	nameSearchOption+=formObj.s_trd_cd.value;
+	return nameSearchOption;
 }
-/**
- * {changeSearchString1} save Search Option of sheet2
- * @param formObj
- */
-function changeSearchString1(formObj){
-	historySearchString1 = "";
-	historySearchString1+=formObj.s_fr_acct_yrmon.value;
-	historySearchString1+=formObj.s_to_acct_yrmon.value;
-	historySearchString1+=formObj.s_jo_crr_cd.value;
-	historySearchString1+=formObj.s_rlane_cd.value;
-	historySearchString1+=formObj.s_trd_cd.value;
-}
-
-/**
- * {currentSearchString} get current Option Search when switch tabs
- * @param formObj
- * @returns String currentString
- */
-function currentSearchString(formObj){
-	let currentString = "";
-	currentString+=formObj.s_fr_acct_yrmon.value;
-	currentString+=formObj.s_to_acct_yrmon.value;
-	currentString+=formObj.s_jo_crr_cd.value;
-	currentString+=formObj.s_rlane_cd.value;
-	currentString+=formObj.s_trd_cd.value;
-	return currentString; 
-}
-
 
 /**
  * {initCombo} functions that define the basic properties of the combobox
@@ -159,6 +136,7 @@ function addComboItem(comboObj, comboItems) {
  * @param Checked
  */
 function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
+	
 	var count = s_jo_crr_cd.GetItemCount();
 	var checkSelectCount = 0;
 	// when check "ALL"
@@ -167,7 +145,7 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
 		// selected all will uncheck all and disable s_rlane_cd,s_trd_cd
         if(bChk){
             for(var i=1 ; i < count ; i++) {
-            	s_jo_crr_cd.SetItemCheck(i,false);
+            	s_jo_crr_cd.SetItemCheck(i,false,0);
             }
             s_rlane_cd.RemoveAll();
          	s_trd_cd.RemoveAll();
@@ -181,27 +159,30 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
         // selected item
         if (bChk) {
         	// uncheck "All" and enable rlane
-        	s_jo_crr_cd.SetItemCheck(0,false);
+        	s_jo_crr_cd.SetItemCheck(0,false,0);
         	s_rlane_cd.SetEnable(true);
         	//Get Data for combobox "Lane"
-        	getLaneComboData();
+//        	getLaneComboData();
         }
     }
 	//when check more
 	for (var i = 0; i < count; i++){
 		if (s_jo_crr_cd.GetItemCheck(i)){
 			checkSelectCount += 1;
-			getLaneComboData();
+//			getLaneComboData();
 		}	
 	}
 	// when no item was checked
 	if(checkSelectCount === 0) {
-		s_jo_crr_cd.SetItemCheck(0,true,false);
+		s_jo_crr_cd.SetItemCheck(0,true,0);
 		s_rlane_cd.RemoveAll();
 		s_trd_cd.RemoveAll();
      	s_rlane_cd.SetEnable(false);
      	s_trd_cd.SetEnable(false);
 	 }
+	else {
+		getLaneComboData();
+	}
 }
 
 /**
@@ -212,7 +193,7 @@ function getLaneComboData(){
  	s_trd_cd.RemoveAll();
  	//get item of combobox "Lane" from server 
 	document.form.f_cmd.value = SEARCH01;
-	var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", FormQueryString(document.form));
+	var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(document.form));
 	rlaneCd = ComGetEtcData(xml,"rlane_cd");
 	//generate Data combobox "Lane"
 	generDataCombo(comboObjects[1], rlaneCd);
@@ -236,12 +217,12 @@ function s_rlane_cd_OnChange(){
 
 /**
  * {getTradeComboData} functions that get Trade Code from database and then initializr combobox Trade Code
- */
+ */ 
 function getTradeComboData(){
 	s_trd_cd.RemoveAll();
 	//get item of combobox "Lane" from server 
 	document.form.f_cmd.value = SEARCH02;
-	var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", FormQueryString(document.form));
+	var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(document.form));
 	trdCd = ComGetEtcData(xml,"trd_cd");
 	//generate Data combobox "Trade code"
 	generDataCombo(comboObjects[2], trdCd);
@@ -270,7 +251,6 @@ function generDataCombo(comboObj, dataStr){
 		}
 		if (dataStr.length > 0 && dataStr.indexOf("|") == -1){
 			comboObj.InsertItem(-1, dataStr, dataStr);
-			console.log(dataStr);
 		}
 	}
 }
@@ -322,23 +302,57 @@ function tab1_OnChange(tabObj, nItem) {
 			objs[currentTab].style.zIndex=objs[nItem].style.zIndex - 1 ;
 		}
 	}
-	// if sheet2 dont have any data will search
-	if(historySearchString!==""&&historySearchString1==""&&sheetObjects[1].RowCount()==0){
-		doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
-	}
-//	 when change Option search client must confirm to search sheet1 or not
-	let curSearchString = currentSearchString(document.form);
-	if(historySearchString!=curSearchString&& historySearchString !== ""){
-		if (confirm("Search Option was changed!! Do you want retrieve?"))
-			doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
-	}
-//	 when change Option search client must confirm to search sheet2 or not
-	else if (historySearchString1!==curSearchString&& historySearchString1 !== ""){
-		if (confirm("Search Option was changed!! Do you want retrieve?"))
-			doActionIBSheet(sheetObjects[nItem], document.form, IBSEARCH);
+	signalToConfirm=handleSignal();
+	switch (signalToConfirm) {
+		case "FISRTTIME":
+			doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+			signalToConfirm="";
+			break;
+		case "SEARCHOPTIONSUMARYWASCHANGE":
+			if (sheetObjects[0].RowCount()>0){
+				if (confirm("Search Option was changed! Do you want retrieve Summary sheet?")){
+					doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
+					signalToConfirm="";
+				}
+			}
+			else{
+				doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
+			}
+			break;
+		case "SEARCHOPTIONDETAILSWASCHANGE":
+			if (sheetObjects[1].RowCount()>0){
+				if (confirm("Search Option was changed! Do you want retrieve Details sheet?")){
+					doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+					signalToConfirm="";
+				}
+			}
+			else {
+				doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+			}
+			break;
+		case "DOUBLECLICK":
+			signalToConfirm="";
+			break;
+				
 	}
 	currentTab=nItem;
     resizeSheet();
+    
+    
+}
+function handleSignal(){
+	if (signalToConfirm==="FISRTTIME")
+		return signalToConfirm;
+	else if (signalToConfirm==="DOUBLECLICK")
+		return signalToConfirm;
+	else {
+		if (searchOptionSumary!==searchOption && currentTab===1){
+			return "SEARCHOPTIONSUMARYWASCHANGE";
+		}
+		else if (searchOptionDetails!==searchOption && currentTab===0){
+			return "SEARCHOPTIONDETAILSWASCHANGE";
+		}
+	}
 }
 
 
@@ -397,7 +411,7 @@ function initSheet(sheetObj,sheetNo) {
 	
 	            SetConfig( { SearchMode:2, MergeSheet:5, Page:20, FrozenCol:0, DataRowMerge:1 } );
 	
-	            var info    = { Sort:1, ColMove:1, HeaderCheck:0, ColResize:1 };
+	            var info    = { Sort:0, ColMove:0, HeaderCheck:0, ColResize:1 };
 	            var headers = [ { Text: HeadTitle1, Align: "Center"},
 	                            { Text: HeadTitle2, Align: "Center"}];
 	            InitHeaders(headers, info);
@@ -429,7 +443,7 @@ function initSheet(sheetObj,sheetNo) {
 				
 				SetConfig( { SearchMode:2, MergeSheet:5, Page:20, FrozenCol:0, DataRowMerge:1 } );
 				
-	            var info    = { Sort:1, ColMove:1, HeaderCheck:0, ColResize:1 };
+	            var info    = { Sort:0, ColMove:0, HeaderCheck:0, ColResize:1 };
 	            var headers = [ { Text: HeadTitle1, Align: "Center"},
 	                            { Text: HeadTitle2, Align: "Center"}];
 	            InitHeaders(headers, info);
@@ -477,7 +491,7 @@ function processButtonClick(){
 		if (srcName == null){
 			return;
 		}
-//		with 4 case "Search | Add | Save | Down Excel"
+//		with 4 case "Search | Add | Save | Down Excel | Down Excel 2"
 		switch (srcName){
 		case "btn_from_back":
 			if(!checkOver3Month(formObj)) return;
@@ -497,10 +511,15 @@ function processButtonClick(){
 			addMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_Retrieve":
-			if (currentTab===0)
+			if (currentTab===0){
 				doActionIBSheet(sheetObject1, formObj, IBSEARCH);
-			else 
+				sheetObjects[1].RemoveAll();
+			}
+			else {
 				doActionIBSheet(sheetObject2, formObj, IBSEARCH);
+				sheetObjects[1].RemoveAll();
+			}
+				
 			break;
 		case "btn_New":
 			doActionIBSheet(sheetObject1,formObj,IBRESET);
@@ -511,9 +530,8 @@ function processButtonClick(){
 		case "btn_DownExcel2":
 			doActionIBSheet(sheetObject2,formObj,IBDOWNEXCEL);
 			break;
-			default:
-				break;
 		}
+		searchOption=setSearchOption();
 		
 	}
 	catch (e){
@@ -564,11 +582,11 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 		//storage processing
 		if(sheetObj.id=="sheet1"){
 			formObj.f_cmd.value = SEARCH;
-			sheetObj.DoSearch("PRACTICE_0003GS.do", FormQueryString(formObj),opt);
+			sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj),opt);
 		}
 		else if (sheetObj.id=="sheet2"){
 			formObj.f_cmd.value = SEARCH03;
-			sheetObj.DoSearch("PRACTICE_0003GS.do", FormQueryString(formObj),opt);
+			sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj),opt);
 		}
 		
 		break;
@@ -591,17 +609,33 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 			ComOpenWait(false);
 		}
 		else {
+//			sheetObj.Down2ExcelBuffer(true);
 			formObj.f_cmd.value = COMMAND01;
 			let param ={
-					URL:"/opuscntr/PRACTICE_0003DL.do",
+					URL:"/opuscntr/ESM_DOU_0108DL.do",
 					ExtendParam:FormQueryString(formObj),
 					FileName:"Details.xls",
 					DownCols: makeHiddenSkipCol(sheetObj),
 					Merge:1,
 					SheetDesign:1,
-					KeyFieldMark:0
+					KeyFieldMark:0,
+					SheetName:'Details'
 			};
-			sheetObj.DirectDown2Excel(param);
+			sheetObjects[1].DirectDown2Excel(param);
+			
+//			formObj.f_cmd.value = COMMAND01;
+//			let param2 ={
+//					URL:"/opuscntr/PRACTICE_0003DL.do",
+//					ExtendParam:FormQueryString(formObj),
+//					FileName:"Details.xls",
+//					DownCols: makeHiddenSkipCol(sheetObj),
+//					Merge:1,
+//					SheetDesign:1,
+//					KeyFieldMark:0,
+//					SheetName:'Summary'
+//			};
+//			sheetObjects[1].DirectDown2Excel(param2);
+//			sheetObj.Down2ExcelBuffer(false);
 			ComOpenWait(false);
 		}	
 		break;
@@ -689,11 +723,13 @@ function sheet1_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
 			}
 		}
 	}
-	
-	changeSearchString(document.form);
 	document.form.f_cmd=SEARCH03;
 	searchOptionForDbl= FormQueryString(document.form)
 	ComOpenWait(false);
+	searchOptionSumary=setSearchOption();
+	if (searchOptionSumary!==""&& searchOptionSumary===searchOptionDetails){
+		searchOption=searchOptionSumary;
+	}
 	
 }
 /**
@@ -719,8 +755,11 @@ function sheet2_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
 			}
 		}
 	}
-	changeSearchString1(document.form);
-	ComOpenWait(false);	
+	ComOpenWait(false);
+	searchOptionDetails =setSearchOption();
+	if (searchOptionSumary!==""&& searchOptionSumary===searchOptionDetails){
+		searchOption=searchOptionSumary;
+	}
 }
 
 
@@ -734,18 +773,14 @@ function sheet1_OnDblClick(SheetObj, Row, Col){
 	if (SheetObj.GetCellValue(Row,"jo_crr_cd")==""){
 		return;
 	}
-	console.log(historySearchString1);
 	if (sheetObjects[1].RowCount() <=0 ){ 
 //		doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
 		ComOpenWait(true);
 		document.form.f_cmd.value = SEARCH03;
-		var xml = sheetObjects[0].GetSearchData("PRACTICE_0003GS.do", searchOptionForDbl);
+		var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", searchOptionForDbl);
 		sheetObjects[1].LoadSearchData(xml,{Sync:1});
 	}
-	else if (sheetObjects[1].RowCount() <=0 && historySearchString1!==""){
-		ComShowCodeMessage('COM130401');
-		return;
-	}
+	signalToConfirm = "DOUBLECLICK"
 	let indexInv=SheetObj.GetCellValue(Row,"csr_no");
 	let rowcount = sheetObjects[1].RowCount();
 	for (let i=Row; i<= rowcount+1;i++) {
