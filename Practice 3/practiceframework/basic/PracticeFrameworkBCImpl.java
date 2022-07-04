@@ -1,11 +1,11 @@
 /*=========================================================
 *Copyright(c) 2022 CyberLogitec
 *@FileName : PracticeFrameworkBCImpl.java
-*@FileTitle : PracticeFrameworkBCImpl
+*@FileTitle : PracticeFramework
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.06 JayTruong
-*@LastModifier : 
+*@LastModifyDate : 2022.06.06 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
 * 2022.06.06  JayTruong
 * 1.0 Creation
@@ -29,6 +29,13 @@ import com.clt.framework.core.layer.event.EventException;
 import com.clt.framework.core.layer.integration.DAOException;
 import com.clt.framework.support.layer.basic.BasicCommandSupport;
 
+/**
+ * ALPS-PracticeFramework Business Logic Command Interface<br>
+ * - ALPS-PracticeFramework에 대한 비지니스 로직에 대한 인터페이스<br>
+ *
+ * @author JayTruong
+ * @since J2EE 1.6
+ */
 public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements PracticeFrameworkBC {
 
 	private transient PracticeFrameworkDBDAO dbDao = null;
@@ -36,12 +43,18 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 	public PracticeFrameworkBCImpl() {
 		dbDao = new PracticeFrameworkDBDAO();
 	}
-	
+
+	/**
+	 * [Act] for [Business Target].<br>
+	 * 
+	 * @param ConditionVO summaryVO
+	 * @return List<SummaryVO>
+	 * @exception EventException
+	 */
 	@Override
 	public List<SummaryVO> searchSummaryVO(ConditionVO summaryVO)
 			throws EventException {
 		
-		// TODO Auto-generated method stub
 		try {
 //			Search in DBDAO
 			return dbDao.searchSummaryVO(summaryVO);
@@ -52,9 +65,14 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		}
 	}
 
+	/**
+	 * [Act] for [Business Target].<br>
+	 * 
+	 * @return List<SummaryVO>
+	 * @throws EventException
+	 */
 	@Override
 	public List<SummaryVO> searchPartner() throws EventException {
-		// TODO Auto-generated method stub
 		try {
 			return dbDao.searchPartner();
 		} catch(DAOException ex) {
@@ -64,6 +82,13 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		}
 	}
 
+	/**
+	 * [Act] for [Business Target]
+	 * 
+	 * @param ConditionVO lane
+	 * @return List<SummaryVO>
+	 * @throws EventException
+	 */
 	@Override
 	public List<SummaryVO> searchLane(ConditionVO lane) throws EventException {
 		try {
@@ -75,6 +100,13 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		}
 	}	
 	
+	/**
+	 * [Act] for [Business Target]
+	 * 
+	 * @param SummarySearchTradeVO trade
+	 * @return  Map<String, String>
+	 * @throws EventException
+	 */
 	@Override
 	public Map<String, String> searchTrade(SummarySearchTradeVO trade) throws EventException {
 		try {
@@ -86,6 +118,13 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 		}
 	}
 
+	/**
+	 * [Act] for [Business Target]
+	 * 
+	 * @param ConditionVO detailsVO
+	 * @return  Map<String, String>
+	 * @throws EventException
+	 */
 	@Override
 	public List<DetailsVO> searchDetailsVO(ConditionVO detailsVO)
 			throws EventException {
@@ -100,10 +139,16 @@ public class PracticeFrameworkBCImpl  extends BasicCommandSupport implements Pra
 	}
 
 
+	/**
+	 * [Act] for [Business Target]
+	 * 
+	 * @param ConditionVO detailsVO
+	 * @return List<DetailsVO>
+	 * @throws EventException
+	 */
 	@Override
 	public List<Object> searchDetailsRSForExcel(ConditionVO conditionVO)
 			throws EventException {
-		// TODO Auto-generated method stub
 		try {
 			DBRowSet rs = dbDao.searchDetailsRSForExcel(conditionVO);
 			List<Object> li=new ArrayList<>();

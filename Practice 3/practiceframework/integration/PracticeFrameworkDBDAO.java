@@ -4,8 +4,8 @@
 *@FileTitle : PracticeFrameworkDBDAO
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.06 JayTruong
-*@LastModifier : 
+*@LastModifyDate : 2022.06.06 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
 * 2022.06.06  JayTruong
 * 1.0 Creation
@@ -36,15 +36,28 @@ import com.clt.framework.support.layer.integration.DBDAOSupport;
 
 
 
+/**
+ * ALPS PracticeFrameworkDBDAO <br>
+ * - JDBC operation to process ALPS-PracticeFrameworkBCImpl system business logic.<br>
+ * 
+ * @author JayTruong
+ * @see Reference PracticeFrameworkBCImpl
+ * @since J2EE 1.6
+ */
 public class PracticeFrameworkDBDAO extends DBDAOSupport{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @param ConditionVO summaryVO
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<SummaryVO> searchSummaryVO(ConditionVO summaryVO) throws EventException,DAOException {
+	public List<SummaryVO> searchSummaryVO(ConditionVO summaryVO) throws DAOException {
 		// TODO Auto-generated method stub
 		DBRowSet dbRowset = null;
 		List<SummaryVO> list = null;
@@ -81,8 +94,14 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		return list;
 	}
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<SummaryVO> searchPartner() throws DAOException {
+	public List<SummaryVO> searchPartner() throws DAOException,EventException {
 		DBRowSet dbRowset = null;
 		List<SummaryVO> list = null;
 		//query parameter
@@ -103,6 +122,13 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		return list;
 	}
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @param ConditionVO lane
+	 * @return List<SummaryVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<SummaryVO> searchLane(ConditionVO lane) throws DAOException{
 		
@@ -141,6 +167,13 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		return list;
 	}
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @param SummarySearchTradeVO trade
+	 * @return Map<String,String>
+	 * @throws DAOException
+	 */
 	public Map<String,String> searchTrade(SummarySearchTradeVO trade) throws DAOException {
 		 DBRowSet dbRowset = null;
 		 Map<String, String> list = new HashMap<String, String>();
@@ -180,6 +213,13 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		 return list;
 	}
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @param ConditionVO detailsVO
+	 * @return List<DetailsVO>
+	 * @throws DAOException
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<DetailsVO> searchDetailsVO(ConditionVO detailsVO) throws DAOException {
 		DBRowSet dbRowset = null;
@@ -217,6 +257,13 @@ public class PracticeFrameworkDBDAO extends DBDAOSupport{
 		return list;
 	}
 
+	/**
+	 * [Act] to [process] information.<br>
+	 * 
+	 * @param ConditionVO conditionVO
+	 * @return DBRowSet
+	 * @throws DAOException
+	 */
 	public DBRowSet searchDetailsRSForExcel(ConditionVO conditionVO) throws DAOException {
 		DBRowSet dbRowset = null;
 		//query parameter

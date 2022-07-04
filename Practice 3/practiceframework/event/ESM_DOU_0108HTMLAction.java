@@ -4,8 +4,8 @@
 *@FileTitle : ESM_DOU_0108HTMLAction
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.06 JayTruong
-*@LastModifier : 
+*@LastModifyDate : 2022.06.06 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
 * 2022.06.06  JayTruong
 * 1.0 Creation
@@ -14,8 +14,10 @@ package com.clt.apps.opus.esm.clv.practiceframework.event;
 
 
 import javax.servlet.http.HttpServletRequest;
+
 import com.clt.apps.opus.esm.clv.practiceframework.vo.ConditionVO;
 import com.clt.apps.opus.esm.clv.practiceframework.vo.SummarySearchTradeVO;
+import com.clt.apps.opus.esm.clv.practiceframework.event.EsmDou0108Event;
 import com.clt.framework.component.util.JSPUtil;
 import com.clt.framework.core.controller.html.HTMLActionException;
 import com.clt.framework.core.layer.event.Event;
@@ -24,19 +26,31 @@ import com.clt.framework.support.controller.HTMLActionSupport;
 import com.clt.framework.support.controller.html.FormCommand;
 
 /**
+ * HTTP Parser<br>
+ * - Parsing the value of the HTML DOM object sent to the server through the 
+ * 		com.clt.apps.opus.esm.clv.practiceframework screen as a Java variable<br>
+ * - Parsing information is converted into an event, put in the request and executed by PracticeFrameworkSC<br>
+ * - Set EventResponse to request to send execution result from PracticeFrameworkSC to View(JSP)<br>
  * @author JayTruong
- *
+ * @see EsmDou0108Event 참조
+ * @since J2EE 1.6
  */
 public class ESM_DOU_0108HTMLAction extends HTMLActionSupport {
 	private static final long serialVersionUID = 1L;
 	
 	
 	/**
-	 * Creat ESM_DOU_0108HTMLAction object
+	 * Create ESM_DOU_0108HTMLAction object
 	 */
 	public ESM_DOU_0108HTMLAction() {}
 	
-	
+	/**
+	 * Parsing HTML DOM object's value into Java variable<br>
+	 * Parsing the information of HttpRequest as EsmDou0108Event and setting it in the request<br>
+	 * @param request HttpServletRequest HttpRequest
+	 * @return event Event interface
+	 * @exception HTMLActionException
+	 */
 	public Event perform(HttpServletRequest request) throws HTMLActionException {
 //		Parsing HTML DOM object's value into Java variable
     	FormCommand command = FormCommand.fromRequest(request);

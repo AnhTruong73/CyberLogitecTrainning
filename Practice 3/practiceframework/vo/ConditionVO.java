@@ -4,8 +4,8 @@
 *@FileTitle : ConditionVO
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.06 JayTruong
-*@LastModifier : 
+*@LastModifyDate : 2022.06.06 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
 * 2022.06.06  JayTruong
 * 1.0 Creation
@@ -26,6 +26,14 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import com.clt.framework.component.common.AbstractValueObject;
 import com.clt.framework.component.util.JSPUtil;
 
+/**
+ * Table Value Ojbect<br>
+ * 관련 Event 에서 생성, 서버실행요청시 Data 전달역할을 수행하는 Value Object
+ *
+ * @author 
+ * @since J2EE 1.6
+ * @see AbstractValueObject
+ */
 public class ConditionVO extends AbstractValueObject{
 	private static final long serialVersionUID = 1L;
 	

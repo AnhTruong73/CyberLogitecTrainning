@@ -4,8 +4,8 @@
 *@FileTitle : EsmDou0108ViewAdapterDL
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.06 JayTruong
-*@LastModifier : 
+*@LastModifyDate : 2022.06.06 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
 * 2022.06.06  JayTruong
 * 1.0 Creation
@@ -36,7 +36,6 @@ public class EsmDou0108ViewAdapterDL extends ViewAdapter{
 	    try {
 			rd.forward(request,response);
 		} catch (ServletException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";

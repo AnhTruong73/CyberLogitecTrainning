@@ -1,13 +1,13 @@
 /*=========================================================
 *Copyright(c) 2022 CyberLogitec
 *@FileName : ESM_DOU_0108.js
-*@FileTitle : Pactice 3
+*@FileTitle : ESM_DOU_0108
 *Open Issues :
 *Change history :
 *@LastModifyDate : 2022.06.02
-*@LastModifier : 
+*@LastModifier : JayTruong
 *@LastVersion : 1.0
-* 2022.06.02
+* 2022.06.02 JayTruong
 * 1.0 Creation
 =========================================================*/
 /****************************************************************************************
@@ -101,7 +101,7 @@ function initCombo(comboObj, comboNo) {
 	case 1:
 		with (comboObj) {
 			SetMultiSelect(1);
-	        SetDropHeight(200);
+	        SetDropHeight(250);
 	        ValidChar(2,1);
 		}
 		// partner from ETCDATA and split "|"
@@ -160,16 +160,12 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
         if (bChk) {
         	// uncheck "All" and enable rlane
         	s_jo_crr_cd.SetItemCheck(0,false,0);
-        	s_rlane_cd.SetEnable(true);
-        	//Get Data for combobox "Lane"
-//        	getLaneComboData();
         }
     }
 	//when check more
 	for (var i = 0; i < count; i++){
 		if (s_jo_crr_cd.GetItemCheck(i)){
 			checkSelectCount += 1;
-//			getLaneComboData();
 		}	
 	}
 	// when no item was checked
@@ -180,10 +176,17 @@ function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
      	s_rlane_cd.SetEnable(false);
      	s_trd_cd.SetEnable(false);
 	 }
-	else {
-		getLaneComboData();
-	}
 }
+
+function s_jo_crr_cd_OnBlur(){
+	if (document.form.s_jo_crr_cd.value !== 'All'){
+			ComOpenWait(true);
+			getLaneComboData();
+			s_trd_cd.SetEnable(false);
+			ComOpenWait(false);
+	}	
+}
+
 
 /**
  * {getLaneComboData} functions that get Lane from database and then initializr combobox Lane
@@ -199,7 +202,7 @@ function getLaneComboData(){
 	generDataCombo(comboObjects[1], rlaneCd);
 	// when ETCdata return > 0 will selected first item and enable combobox "Lane"
 	if(s_rlane_cd.GetItemCount() > 0){
-		s_rlane_cd.SetSelectIndex(0,1);
+//		s_rlane_cd.SetSelectIndex(0,1);
 		s_rlane_cd.SetEnable(true);
 	}
 	else
@@ -216,6 +219,20 @@ function s_rlane_cd_OnChange(){
 }
 
 /**
+ * {s_rlane_cd_OnFocus} functions that handling event on focus of combobox Lane
+ */
+function s_rlane_cd_OnFocus(){
+	s_rlane_cd.SetOutLineColor("#B8D6F6");
+}
+
+/**
+ * {s_trd_cd_OnFocus} functions that handling event on focus of combobox Trade
+ */
+function s_trd_cd_OnFocus(){
+	s_trd_cd.SetOutLineColor("#B8D6F6");
+}
+
+/**
  * {getTradeComboData} functions that get Trade Code from database and then initializr combobox Trade Code
  */ 
 function getTradeComboData(){
@@ -228,7 +245,7 @@ function getTradeComboData(){
 	generDataCombo(comboObjects[2], trdCd);
 	// when ETCdata return > 0 will selected first item and enable combobox "Trade code"
 	if(s_trd_cd.GetItemCount() > 0){
-		s_trd_cd.SetSelectIndex(0,1);
+//		s_trd_cd.SetSelectIndex(0,1);
 		s_trd_cd.SetEnable(true);
 	}
 	else
@@ -475,6 +492,46 @@ function initSheet(sheetObj,sheetNo) {
 }
 
 
+/** 
+ * {addMonth} add month when click button next
+ * @param obj
+ */
+function addMonth(obj){
+	sheetObjects[0].RemoveAll();
+	sheetObjects[1].RemoveAll();
+	var ymFrom = ComGetDateAdd(obj.value + "-01","M",1);
+	obj.value = GetDateFormat(ymFrom,"ym");
+}
+
+function checkSearchOption(formObj){
+	var error  ="";
+	if (formObj.s_rlane_cd.value === "" && formObj.s_jo_crr_cd.value !== "All"){
+		s_rlane_cd.SetOutLineColor("#FF0000");
+		error = "Rlane";
+	}
+	if (formObj.s_trd_cd.value === "" && formObj.s_rlane_cd.value !== ""){
+		s_trd_cd.SetOutLineColor("#FF0000");
+		error = "Trade";
+	}
+	if (error!== ""){
+		ComShowCodeMessage('COM130403',error);
+		return false;
+	}
+	return true;
+	
+}
+
+
+/**
+ * {subMonth} sub month when click button back
+ * @param obj
+ */
+function subMonth(obj){
+	sheetObjects[0].RemoveAll();
+	sheetObjects[1].RemoveAll();
+	var ymFrom = ComGetDateAdd(obj.value + "-01","M",-1);
+	obj.value = GetDateFormat(ymFrom,"ym");
+}
 
 /**
  * {processButtonClick} function for branching to the corresponding logic when a button on the screen is pressed
@@ -494,23 +551,22 @@ function processButtonClick(){
 //		with 4 case "Search | Add | Save | Down Excel | Down Excel 2"
 		switch (srcName){
 		case "btn_from_back":
-			if(!checkOver3Month(formObj)) return;
 			subMonth(formObj.s_fr_acct_yrmon);
 			break;
 		case "btn_from_next":
 			if (!checkDate(formObj)) return;
 			addMonth(formObj.s_fr_acct_yrmon);
 			break;
-			
 		case "btn_to_back":
 			if (!checkDate(formObj)) return;
 			subMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_to_next":
-			if(!checkOver3Month(formObj)) return;
 			addMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_Retrieve":
+			if(!checkOver3Month(formObj)) return;
+			if(!checkSearchOption(formObj)) return;
 			if (currentTab===0){
 				doActionIBSheet(sheetObject1, formObj, IBSEARCH);
 				sheetObjects[1].RemoveAll();
@@ -544,28 +600,7 @@ function processButtonClick(){
 		}
 	}
 }
-/** 
- * {addMonth} add month when click button next
- * @param obj
- */
-function addMonth(obj){
-	sheetObjects[0].RemoveAll();
-	sheetObjects[1].RemoveAll();
-	var ymFrom = ComGetDateAdd(obj.value + "-01","M",1);
-	obj.value = GetDateFormat(ymFrom,"ym");
-}
 
-
-/**
- * {subMonth} sub month when click button back
- * @param obj
- */
-function subMonth(obj){
-	sheetObjects[0].RemoveAll();
-	sheetObjects[1].RemoveAll();
-	var ymFrom = ComGetDateAdd(obj.value + "-01","M",-1);
-	obj.value = GetDateFormat(ymFrom,"ym");
-}
 /**
  * {doActionIBSheet} functions that define transaction logic between UI and server
  * 
@@ -615,7 +650,7 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 					URL:"/opuscntr/ESM_DOU_0108DL.do",
 					ExtendParam:FormQueryString(formObj),
 					FileName:"Details.xls",
-					DownCols: makeHiddenSkipCol(sheetObj),
+					DownCols: makeHiddenSkipCol(sheetObjects[1]),
 					Merge:1,
 					SheetDesign:1,
 					KeyFieldMark:0,
@@ -795,7 +830,6 @@ function sheet1_OnDblClick(SheetObj, Row, Col){
 			}
 		}
 	}
-	
 }
 
 
