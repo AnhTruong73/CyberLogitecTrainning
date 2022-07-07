@@ -31,7 +31,7 @@ import com.clt.framework.support.layer.basic.BasicCommandSupport;
 
 /**
  * ALPS-PracticeFramework Business Logic Command Interface<br>
- * - ALPS-PracticeFramework에 대한 비지니스 로직에 대한 인터페이스<br>
+ * - Interface to business logic for ALPS-Practice Framework<br>
  *
  * @author JayTruong
  * @since J2EE 1.6

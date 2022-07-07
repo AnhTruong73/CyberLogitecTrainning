@@ -25,9 +25,23 @@ import com.clt.framework.component.rowset.DBRowSet;
 import com.clt.framework.core.controller.ViewAdapter;
 import com.clt.framework.core.layer.event.GeneralEventResponse;
 
+/**
+ * @author JayTruong
+ *
+ */
 public class EsmDou0108ViewAdapterDL extends ViewAdapter{
 
 	
+	/** 
+	 * View Adapter. <br>
+	 * 
+	 * 
+	 * @param HttpServletRequest request
+	 * @param HttpServletResponse response
+	 * @return String
+	 * @exception EventException
+	 * 
+	 */
 	public String makeXML(HttpServletRequest request, HttpServletResponse response) {
 		GeneralEventResponse eventResponse = (GeneralEventResponse)request.getAttribute("EventResponse");
 		request.setAttribute("SHEETDATA", eventResponse.getRsVoList());
@@ -41,12 +55,18 @@ public class EsmDou0108ViewAdapterDL extends ViewAdapter{
 		return "";
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.clt.framework.core.controller.ViewAdapter#makeDataTag(java.util.List, java.lang.String)
+	 */
 	@Override
 	protected String makeDataTag(List<AbstractValueObject> arg0, String arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.clt.framework.core.controller.ViewAdapter#makeDataTag(com.clt.framework.component.rowset.DBRowSet, java.lang.String)
+	 */
 	@Override
 	protected String makeDataTag(DBRowSet arg0, String arg1) {
 		// TODO Auto-generated method stub

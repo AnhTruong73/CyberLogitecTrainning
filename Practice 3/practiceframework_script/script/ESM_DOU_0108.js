@@ -43,8 +43,10 @@ var signalToConfirm ="";
 var searchOption="";
 var searchOptionSumary="";
 var searchOptionDetails="";
+var checkConfirm="";
 
 var searchOptionForDbl = "";
+var searchOptionHistory = "";
 document.onclick=processButtonClick;
 
 /**
@@ -76,9 +78,14 @@ function loadPage(){
 	searchOption=setSearchOption();
 	//Search Sumary tab in first - time 
 	doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
-	signalToConfirm = "FISRTTIME";
+//	signalToConfirm = "FISRTTIME";
+	searchOptionHistory = setSearchOption();
 }
 
+/**
+ * {setSearchOption} set SearchOption
+ * @return nameSearchOption
+ */
 function setSearchOption(){
 	let formObj = document.form;
 	let nameSearchOption = "";
@@ -245,7 +252,6 @@ function getTradeComboData(){
 	generDataCombo(comboObjects[2], trdCd);
 	// when ETCdata return > 0 will selected first item and enable combobox "Trade code"
 	if(s_trd_cd.GetItemCount() > 0){
-//		s_trd_cd.SetSelectIndex(0,1);
 		s_trd_cd.SetEnable(true);
 	}
 	else
@@ -319,48 +325,49 @@ function tab1_OnChange(tabObj, nItem) {
 			objs[currentTab].style.zIndex=objs[nItem].style.zIndex - 1 ;
 		}
 	}
+	console.log(signalToConfirm);
 	signalToConfirm=handleSignal();
+	
+	with 4 case "SEARCHOPTIONSUMARYWASCHANGE | SEARCHOPTIONDETAILSWASCHANGE | DOUBLECLICK | SYNCHRONOUS01 | SYNCHRONOUS02"
 	switch (signalToConfirm) {
-		case "FISRTTIME":
-			doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
-			signalToConfirm="";
-			break;
 		case "SEARCHOPTIONSUMARYWASCHANGE":
-			if (sheetObjects[0].RowCount()>0){
-				if (confirm("Search Option was changed! Do you want retrieve Summary sheet?")){
-					doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
-					signalToConfirm="";
-				}
-			}
-			else{
+			if (ComShowCodeConfirm("COM132905")){
 				doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
+				signalToConfirm="SYNCHRONOUS01";
 			}
 			break;
 		case "SEARCHOPTIONDETAILSWASCHANGE":
-			if (sheetObjects[1].RowCount()>0){
-				if (confirm("Search Option was changed! Do you want retrieve Details sheet?")){
-					doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
-					signalToConfirm="";
-				}
-			}
-			else {
+			if (ComShowCodeConfirm("COM132904")){
 				doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+				signalToConfirm="SYNCHRONOUS02";
 			}
 			break;
 		case "DOUBLECLICK":
 			signalToConfirm="";
 			break;
-				
+		case "SYNCHRONOUS01":
+			doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
+			signalToConfirm="";
+			break;
+		case "SYNCHRONOUS02":
+			doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
+			signalToConfirm="";
+			break
 	}
 	currentTab=nItem;
-    resizeSheet();
-    
-    
+    resizeSheet();   
 }
+
+/**
+ * {handleSignal} handle all event change tab
+ * @returns {String}
+ */
 function handleSignal(){
-	if (signalToConfirm==="FISRTTIME")
+	if (signalToConfirm==="DOUBLECLICK")
 		return signalToConfirm;
-	else if (signalToConfirm==="DOUBLECLICK")
+	else if (signalToConfirm ==="SYNCHRONOUS01")
+		return signalToConfirm;
+	else if (signalToConfirm ==="SYNCHRONOUS02")
 		return signalToConfirm;
 	else {
 		if (searchOptionSumary!==searchOption && currentTab===1){
@@ -503,25 +510,6 @@ function addMonth(obj){
 	obj.value = GetDateFormat(ymFrom,"ym");
 }
 
-function checkSearchOption(formObj){
-	var error  ="";
-	if (formObj.s_rlane_cd.value === "" && formObj.s_jo_crr_cd.value !== "All"){
-		s_rlane_cd.SetOutLineColor("#FF0000");
-		error = "Rlane";
-	}
-	if (formObj.s_trd_cd.value === "" && formObj.s_rlane_cd.value !== ""){
-		s_trd_cd.SetOutLineColor("#FF0000");
-		error = "Trade";
-	}
-	if (error!== ""){
-		ComShowCodeMessage('COM130403',error);
-		return false;
-	}
-	return true;
-	
-}
-
-
 /**
  * {subMonth} sub month when click button back
  * @param obj
@@ -565,26 +553,24 @@ function processButtonClick(){
 			addMonth(formObj.s_to_acct_yrmon);
 			break;
 		case "btn_Retrieve":
-			if(!checkOver3Month(formObj)) return;
-			if(!checkSearchOption(formObj)) return;
+			
 			if (currentTab===0){
 				doActionIBSheet(sheetObject1, formObj, IBSEARCH);
-				sheetObjects[1].RemoveAll();
+//				sheetObjects[1].RemoveAll();
 			}
 			else {
 				doActionIBSheet(sheetObject2, formObj, IBSEARCH);
-				sheetObjects[1].RemoveAll();
+//				sheetObjects[1].RemoveAll();
 			}
-				
 			break;
 		case "btn_New":
 			doActionIBSheet(sheetObject1,formObj,IBRESET);
 			break;
 		case "btn_DownExcel":
-			doActionIBSheet(sheetObject1,formObj,IBDOWNEXCEL);
+			doActionIBSheet(sheetObjects[currentTab],formObj,IBDOWNEXCEL);
 			break;
 		case "btn_DownExcel2":
-			doActionIBSheet(sheetObject2,formObj,IBDOWNEXCEL);
+			doActionIBSheet(sheetObject2,formObj,IBLOADEXCEL);
 			break;
 		}
 		searchOption=setSearchOption();
@@ -613,15 +599,18 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 	switch (sAction){
 	case IBSEARCH:
 		var opt = { Sync : 1 };
+		if(!checkOver3Month(formObj)) return;
 		ComOpenWait(true);
 		//storage processing
 		if(sheetObj.id=="sheet1"){
 			formObj.f_cmd.value = SEARCH;
 			sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj),opt);
+			signalToConfirm="SYNCHRONOUS01";
 		}
 		else if (sheetObj.id=="sheet2"){
 			formObj.f_cmd.value = SEARCH03;
 			sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj),opt);
+			signalToConfirm="SYNCHRONOUS02";
 		}
 		
 		break;
@@ -630,49 +619,34 @@ function doActionIBSheet(sheetObj,formObj,sAction) {
 		returnDefault(formObj);
 		break;
 	case IBDOWNEXCEL:
+		if(sheetObj.RowCount() < 1){
+			ComShowCodeMessage("COM132501");
+			break;
+		}
 		ComOpenWait(true);
 		if (sheetObj.id=="sheet1"){
-			if(sheetObj.RowCount() < 1){
-				ComShowCodeMessage("COM132501");
-				ComOpenWait(false);
-				break;
-			}
-			sheetObjects[0].Down2ExcelBuffer(true);
-			sheetObjects[0].Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObjects[0]),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Summary'});
-			sheetObjects[1].Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObjects[1]),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Details'});
-			sheetObjects[0].Down2ExcelBuffer(false);
-			ComOpenWait(false);
+			sheetObj.Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObj),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Summary'});	
 		}
 		else {
-//			sheetObj.Down2ExcelBuffer(true);
-			formObj.f_cmd.value = COMMAND01;
-			let param ={
-					URL:"/opuscntr/ESM_DOU_0108DL.do",
-					ExtendParam:FormQueryString(formObj),
-					FileName:"Details.xls",
-					DownCols: makeHiddenSkipCol(sheetObjects[1]),
-					Merge:1,
-					SheetDesign:1,
-					KeyFieldMark:0,
-					SheetName:'Details'
-			};
-			sheetObjects[1].DirectDown2Excel(param);
-			
-//			formObj.f_cmd.value = COMMAND01;
-//			let param2 ={
-//					URL:"/opuscntr/PRACTICE_0003DL.do",
-//					ExtendParam:FormQueryString(formObj),
-//					FileName:"Details.xls",
-//					DownCols: makeHiddenSkipCol(sheetObj),
-//					Merge:1,
-//					SheetDesign:1,
-//					KeyFieldMark:0,
-//					SheetName:'Summary'
-//			};
-//			sheetObjects[1].DirectDown2Excel(param2);
-//			sheetObj.Down2ExcelBuffer(false);
-			ComOpenWait(false);
-		}	
+			sheetObj.Down2Excel({FileName:"Excel.xls",DownCols: makeHiddenSkipCol(sheetObj),Merge:1, SheetDesign:1, KeyFieldMark:0,SheetName:'Details'});
+		}
+		ComOpenWait(false);
+		break;
+	case IBLOADEXCEL:
+		ComOpenWait(true);
+		formObj.f_cmd.value = COMMAND01;
+		let param ={
+				URL:"/opuscntr/ESM_DOU_0108DL.do",
+				ExtendParam:FormQueryString(formObj),
+				FileName:"Details.xls",
+				DownCols: makeHiddenSkipCol(sheetObjects[1]),
+				Merge:1,
+				SheetDesign:1,
+				KeyFieldMark:0,
+				SheetName:'Details'
+		};
+		sheetObjects[1].DirectDown2Excel(param);
+		ComOpenWait(false);
 		break;
 	}
 }
@@ -701,11 +675,9 @@ function checkDate(formObj){
 	var fromDate = formObj.s_fr_acct_yrmon.value.replaceStr("-","") + "01";
 	var toDate   = formObj.s_to_acct_yrmon.value.replaceStr("-","") + "01";
 	if (ComGetDaysBetween(fromDate, toDate) <= 0){
-		ComShowMessage("ToDate must be greater than FromDate");
+		ComShowCodeMessage("COM132002");
 		return false;
 	}
-		
-		
 	return true;
 	
 }
@@ -718,7 +690,7 @@ function checkOver3Month(formObj){
 	var fromDate = formObj.s_fr_acct_yrmon.value.replaceStr("-","") + "01";
 	var toDate   = formObj.s_to_acct_yrmon.value.replaceStr("-","") + "01";
 	if (ComGetDaysBetween(fromDate, toDate) >= 88 && checkAgree==0){
-		if (confirm("Year Month over 3 months, do you realy want to get data?")){
+		if (ComShowCodeConfirm("COM132906")){
 			checkAgree=1;
 			return true;
 		}
@@ -792,7 +764,8 @@ function sheet2_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg){
 	}
 	ComOpenWait(false);
 	searchOptionDetails =setSearchOption();
-	if (searchOptionSumary!==""&& searchOptionSumary===searchOptionDetails){
+	searchOptionHistory = setSearchOption();
+	if (searchOptionSumary!=="" && searchOptionSumary===searchOptionDetails){
 		searchOption=searchOptionSumary;
 	}
 }
@@ -808,14 +781,15 @@ function sheet1_OnDblClick(SheetObj, Row, Col){
 	if (SheetObj.GetCellValue(Row,"jo_crr_cd")==""){
 		return;
 	}
-	if (sheetObjects[1].RowCount() <=0 ){ 
+	if ((sheetObjects[1].RowCount() <=0) || (sheetObjects[1].RowCount() > 0 && searchOptionDetails !== searchOptionSumary )){ 
 //		doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
 		ComOpenWait(true);
 		document.form.f_cmd.value = SEARCH03;
 		var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", searchOptionForDbl);
 		sheetObjects[1].LoadSearchData(xml,{Sync:1});
 	}
-	signalToConfirm = "DOUBLECLICK"
+	signalToConfirm = "DOUBLECLICK";
+	searchOptionDetails =searchOptionSumary;
 	let indexInv=SheetObj.GetCellValue(Row,"csr_no");
 	let rowcount = sheetObjects[1].RowCount();
 	for (let i=Row; i<= rowcount+1;i++) {

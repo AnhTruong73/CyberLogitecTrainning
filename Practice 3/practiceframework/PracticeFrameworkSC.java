@@ -52,6 +52,14 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 	
 	
+
+	/** 
+	 * Do perform
+	 * Doing related internal objects when calling a business scenario
+	 * 
+	 * (non-Javadoc)
+	 * @see com.clt.framework.core.layer.service.Command#perform(com.clt.framework.core.layer.event.Event)
+	 */
 	@Override
 	public EventResponse perform(Event e) throws EventException {
 		// TODO Auto-generated method stub
@@ -88,6 +96,13 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 	
 	
+	/**
+	 * This function is used for searching data for DownExcel2
+	 * 
+	 * @param Event e
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse searchDetailsRSForExcel(Event e) throws EventException {
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
@@ -104,6 +119,14 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 
 
+	/**
+	 * ESM_DOU_0108 : [Event]<br>
+	 * [Act] for [Business Target].<br>
+	 * This method is used for searching Details data  
+	 * @param Event e
+	 * @return EventResponse
+	 * @exception EventException
+	 */
 	private EventResponse searchDetails(Event e) throws EventException {
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		EsmDou0108Event event = (EsmDou0108Event)e;
@@ -122,7 +145,11 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 
-
+	/**
+	 * This function is used for initializing data for Lane combo box
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse searchLane(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		EsmDou0108Event event = (EsmDou0108Event)e;
@@ -149,6 +176,11 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 
 
+	/**
+	 * This function is used for initializing data for Partner combo box
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse initData() throws EventException{
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
@@ -173,6 +205,12 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 		return eventResponse;
 	}
 	
+	
+	/**
+	 * This function is used for initializing data for Trade combo box
+	 * @return eventResponse
+	 * @throws EventException
+	 */
 	private EventResponse searchTrade(Event e) throws EventException{
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
 		EsmDou0108Event event = (EsmDou0108Event)e;
@@ -197,6 +235,14 @@ public class PracticeFrameworkSC extends ServiceCommandSupport{
 	}
 
 
+	/**
+	 * ESM_DOU_0108 : [Event]<br>
+	 * [Act] for [Business Target].<br>
+	 * This method is used for searching Summary data  
+	 * @param Event e
+	 * @return EventResponse
+	 * @exception EventException
+	 */
 	private EventResponse searchSummary(Event e) throws EventException  {
 		// TODO Auto-generated method stub
 		GeneralEventResponse eventResponse = new GeneralEventResponse();
