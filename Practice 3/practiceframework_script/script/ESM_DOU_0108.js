@@ -204,7 +204,7 @@ function getLaneComboData(){
  	//get item of combobox "Lane" from server 
 	document.form.f_cmd.value = SEARCH01;
 	var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(document.form));
-	rlaneCd = ComGetEtcData(xml,"rlane_cd");
+	rlaneCd = ComGetEtcData(xml,"rlane_cd"); 
 	//generate Data combobox "Lane"
 	generDataCombo(comboObjects[1], rlaneCd);
 	// when ETCdata return > 0 will selected first item and enable combobox "Lane"
@@ -223,20 +223,6 @@ function s_rlane_cd_OnChange(){
 	// Get Data and set enable combobox "Trade code" 
 	s_trd_cd.SetEnable(true);
 	getTradeComboData();
-}
-
-/**
- * {s_rlane_cd_OnFocus} functions that handling event on focus of combobox Lane
- */
-function s_rlane_cd_OnFocus(){
-	s_rlane_cd.SetOutLineColor("#B8D6F6");
-}
-
-/**
- * {s_trd_cd_OnFocus} functions that handling event on focus of combobox Trade
- */
-function s_trd_cd_OnFocus(){
-	s_trd_cd.SetOutLineColor("#B8D6F6");
 }
 
 /**
@@ -328,18 +314,18 @@ function tab1_OnChange(tabObj, nItem) {
 	console.log(signalToConfirm);
 	signalToConfirm=handleSignal();
 	
-	with 4 case "SEARCHOPTIONSUMARYWASCHANGE | SEARCHOPTIONDETAILSWASCHANGE | DOUBLECLICK | SYNCHRONOUS01 | SYNCHRONOUS02"
+//	with 4 case "SEARCHOPTIONSUMARYWASCHANGE | SEARCHOPTIONDETAILSWASCHANGE | DOUBLECLICK | SYNCHRONOUS01 | SYNCHRONOUS02"
 	switch (signalToConfirm) {
 		case "SEARCHOPTIONSUMARYWASCHANGE":
 			if (ComShowCodeConfirm("COM132905")){
 				doActionIBSheet(sheetObjects[0], document.form, IBSEARCH);
-				signalToConfirm="SYNCHRONOUS01";
+				signalToConfirm="";
 			}
 			break;
 		case "SEARCHOPTIONDETAILSWASCHANGE":
 			if (ComShowCodeConfirm("COM132904")){
 				doActionIBSheet(sheetObjects[1], document.form, IBSEARCH);
-				signalToConfirm="SYNCHRONOUS02";
+				signalToConfirm="";
 			}
 			break;
 		case "DOUBLECLICK":

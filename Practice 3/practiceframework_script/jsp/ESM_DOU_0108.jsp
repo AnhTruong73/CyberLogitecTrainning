@@ -91,7 +91,7 @@
             <span id="navigation"></span>
         </div>
     </div>
-    <div class="wrap_search">
+    <div class="wrap_search tab">
         <div class="opus_design_inquiry wFit">
             <table>
                 <tbody>
